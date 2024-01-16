@@ -1,5 +1,6 @@
 package com.maurya.memoease.di
 
+import com.maurya.memoease.api.AuthenticationInterceptor
 import com.maurya.memoease.utils.Constants.BASE_URL
 import com.maurya.memoease.api.UserAPI
 import dagger.Module
@@ -23,6 +24,12 @@ class NetworkModule {
             .baseUrl(BASE_URL)
             .build()
     }
+
+    fun provideOKHTTPClient(authenticationInterceptor: AuthenticationInterceptor){
+
+
+    }
+
 
     @Singleton
     @Provides
