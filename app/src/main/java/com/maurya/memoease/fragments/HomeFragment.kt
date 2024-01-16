@@ -12,10 +12,18 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.snackbar.Snackbar
 import com.maurya.memoease.OnItemClickListener
 import com.maurya.memoease.R
+import com.maurya.memoease.api.NotesAPI
 import com.maurya.memoease.databinding.FragmentHomeBinding
 import com.maurya.memoease.models.checkInternet
+import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import javax.inject.Inject
 
+@AndroidEntryPoint
 class HomeFragment : Fragment(), OnItemClickListener {
+
 
     private lateinit var fragmentHomeBinding: FragmentHomeBinding
     private lateinit var navController: NavController
@@ -40,8 +48,10 @@ class HomeFragment : Fragment(), OnItemClickListener {
 
 
 
-        fragmentHomeBinding.recyclerViewCompleteHomeFragment.isNestedScrollingEnabled = false
-        fragmentHomeBinding.recyclerViewInCompleteHomeFragment.isNestedScrollingEnabled = false
+
+
+
+        fragmentHomeBinding.recyclerViewHomeFragment.isNestedScrollingEnabled = false
 
         fetchDataFromDatabase()
         displayItems()
@@ -53,30 +63,19 @@ class HomeFragment : Fragment(), OnItemClickListener {
     private fun fetchDataFromDatabase() {
 
 
-
-
     }
-
 
 
     private fun displayItems() {
 
-//        fragmentHomeBinding.recyclerViewInCompleteHomeFragment.setHasFixedSize(true)
-//        fragmentHomeBinding.recyclerViewInCompleteHomeFragment.setItemViewCacheSize(13)
-//        fragmentHomeBinding.recyclerViewInCompleteHomeFragment.layoutManager =
-//            LinearLayoutManager(context)
-////        adapterToDoInComplete =
-////            AdapterToDo(requireContext(), this, inCompleteList, completeList, false)
-////        fragmentHomeBinding.recyclerViewInCompleteHomeFragment.adapter = adapterToDoInComplete
-//
-//
-//        fragmentHomeBinding.recyclerViewCompleteHomeFragment.setHasFixedSize(true)
-//        fragmentHomeBinding.recyclerViewCompleteHomeFragment.setItemViewCacheSize(13)
-//        fragmentHomeBinding.recyclerViewCompleteHomeFragment.layoutManager =
-//            LinearLayoutManager(context)
-////        adapterToDoComplete =
-////            AdapterToDo(requireContext(), this, inCompleteList, completeList, true)
-////        fragmentHomeBinding.recyclerViewCompleteHomeFragment.adapter = adapterToDoComplete
+        fragmentHomeBinding.recyclerViewHomeFragment.setHasFixedSize(true)
+        fragmentHomeBinding.recyclerViewHomeFragment.setItemViewCacheSize(13)
+        fragmentHomeBinding.recyclerViewHomeFragment.layoutManager =
+            LinearLayoutManager(context)
+        adapterToDoInComplete =
+            AdapterToDo(requireContext(), this, inCompleteList, completeList, false)
+        fragmentHomeBinding.recyclerViewInCompleteHomeFragment.adapter = adapterToDoInComplete
+
 
 
     }
@@ -85,17 +84,6 @@ class HomeFragment : Fragment(), OnItemClickListener {
 
         //ToolbarAddTask
 
-        fragmentHomeBinding.completedLayout.setOnClickListener {
-            isRecyclerViewVisible = !isRecyclerViewVisible // Toggle the visibility state
-
-            if (isRecyclerViewVisible) {
-                fragmentHomeBinding.completedImage.setImageResource(R.drawable.icon_completed_visible)
-                fragmentHomeBinding.recyclerViewCompleteHomeFragment.visibility = View.VISIBLE
-            } else {
-                fragmentHomeBinding.completedImage.setImageResource(R.drawable.icon_completed_invisible)
-                fragmentHomeBinding.recyclerViewCompleteHomeFragment.visibility = View.GONE
-            }
-        }
 
         fragmentHomeBinding.logOutUser.setOnClickListener {
 
@@ -122,7 +110,6 @@ class HomeFragment : Fragment(), OnItemClickListener {
     }
 
     override fun onItemClickListener(position: Int, isComplete: Boolean) {
-
 
 
     }
@@ -179,7 +166,6 @@ class HomeFragment : Fragment(), OnItemClickListener {
     }
 
 
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
@@ -198,9 +184,6 @@ class HomeFragment : Fragment(), OnItemClickListener {
         }
 
 
-        val sharedPreferences =
-            requireContext().getSharedPreferences("DateCalender", Context.MODE_PRIVATE)
-        sharedPreferences.edit().clear().apply()
     }
 
 }

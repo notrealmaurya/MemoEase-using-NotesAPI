@@ -2,8 +2,8 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    style="@style/LayoutStyle"
     android:id="@+id/homeRelativeLayout"
+    style="@style/LayoutStyle"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
@@ -11,29 +11,27 @@
 
     <LinearLayout
         android:id="@+id/topLayout"
+        style="@style/StatusBarLayoutStyle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingStart="30dp"
-        style="@style/StatusBarLayoutStyle"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        android:paddingStart="30dp">
 
         <TextView
             android:layout_width="0dp"
             android:layout_height="135dp"
+            android:layout_weight="1"
             android:gravity="center_vertical"
             android:text="To Do List"
-            android:layout_weight="1"
             android:textSize="40sp" />
 
         <ImageView
             android:id="@+id/logOutUser"
             android:layout_width="50dp"
             android:layout_height="50dp"
-            android:src="@drawable/icon_user"
-            android:layout_marginEnd="30dp"
             android:layout_gravity="center"
-            />
-
+            android:layout_marginEnd="30dp"
+            android:src="@drawable/icon_user" />
 
 
     </LinearLayout>
@@ -50,51 +48,11 @@
             android:paddingBottom="70dp">
 
             <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/recyclerViewInCompleteHomeFragment"
+                android:id="@+id/recyclerViewHomeFragment"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="20dp" />
 
-
-            <LinearLayout
-                android:id="@+id/completedLayout"
-                style="@style/StatusBarLayoutStyle"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
-                android:layout_marginBottom="10dp"
-                android:clickable="true"
-                android:orientation="horizontal"
-                android:padding="10dp"
-                android:visibility="gone">
-
-                <TextView
-                    android:id="@+id/taskCompleteUpToDateTaskItem"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:layout_marginStart="20dp"
-                    android:layout_weight="1"
-                    android:clickable="false"
-                    android:text="Completed"
-                    android:textSize="16sp" />
-
-                <ImageView
-                    android:id="@+id/completedImage"
-                    android:layout_width="35dp"
-                    android:layout_height="35dp"
-                    android:layout_gravity="center"
-                    android:layout_marginEnd="30dp"
-                    android:src="@drawable/icon_completed_invisible" />
-
-            </LinearLayout>
-
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/recyclerViewCompleteHomeFragment"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
-                android:visibility="gone" />
         </LinearLayout>
 
     </androidx.core.widget.NestedScrollView>

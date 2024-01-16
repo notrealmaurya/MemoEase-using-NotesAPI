@@ -20,7 +20,6 @@ import javax.inject.Singleton
 @Module
 class NetworkModule {
 
-
     @Singleton
     @Provides
     fun providesRetrofitBuilder(): Retrofit.Builder {
@@ -49,18 +48,13 @@ class NetworkModule {
     }
 
 
-    fun provideAuthRetrofit(okHttpClient: OkHttpClient): Retrofit {
-        return Retrofit.Builder()
-            .baseUrl(BASE_URL)
-            .addConverterFactory(GsonConverterFactory.create())
-            .client(okHttpClient)
-            .build()
-    }
-
-
-    fun providesNoteAPI(retrofitBuilder: Retrofit.Builder)
+    @Singleton
+    @Provides
+    fun providesNoteAPI(retrofitBuilder: Retrofit.Builder, okHttpClient: OkHttpClient)
             : NotesAPI {
-        return retrofitBuilder.build().create(NotesAPI::class.java)
+        return retrofitBuilder
+            .client(okHttpClient)
+            .build().create(NotesAPI::class.java)
     }
 
 }

@@ -40,7 +40,6 @@ class UserRepository @Inject constructor(private val userAPI: UserAPI) {
         } else {
             _userResponseLiveData.postValue(NetworkResult.Error("Something went wrong"))
         }
-
     }
 
 
