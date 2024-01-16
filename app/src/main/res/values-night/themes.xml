@@ -54,12 +54,6 @@
     </style>
 
 
-    <!--    LottieBg-->
-<!--    <style name="LottieFile">-->
-<!--        <item name="lottie_fileName">"dtxToDoCheck2.json"</item>-->
-<!--    </style>-->
-
-
     <!--  TaskItemStyle-->
     <style name="TaskItemStyle">
         <item name="android:background">@color/statusBarDark</item>

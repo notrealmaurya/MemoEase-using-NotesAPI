@@ -61,10 +61,6 @@
         <item name="android:background">@drawable/bg_light</item>
     </style>
 
-    <!--    LottieBg-->
-<!--    <style name="LottieFile">-->
-<!--        <item name="lottie_fileName">"dtxToDoCheck1.json"</item>-->
-<!--    </style>-->
 
     <!--  TaskItemStyle-->
     <style name="TaskItemStyle">
