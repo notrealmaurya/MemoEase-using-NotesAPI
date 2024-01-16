@@ -6,15 +6,25 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
+import androidx.core.view.isVisible
+import androidx.fragment.app.viewModels
+import androidx.lifecycle.Observer
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.google.android.material.snackbar.Snackbar
+import com.google.gson.Gson
+import com.maurya.memoease.AdapterNotes
+import com.maurya.memoease.NoteViewModel
 import com.maurya.memoease.OnItemClickListener
 import com.maurya.memoease.R
 import com.maurya.memoease.api.NotesAPI
 import com.maurya.memoease.databinding.FragmentHomeBinding
+import com.maurya.memoease.models.NoteResponse
 import com.maurya.memoease.models.checkInternet
+import com.maurya.memoease.utils.NetworkResult
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -27,15 +37,12 @@ class HomeFragment : Fragment(), OnItemClickListener {
 
     private lateinit var fragmentHomeBinding: FragmentHomeBinding
     private lateinit var navController: NavController
-    private var isDetailVisible = false
-    private var isDateVisible = false
-    private var isImportant: Boolean = false
+    private val noteViewModel by viewModels<NoteViewModel>()
+    private lateinit var adapterNotes: AdapterNotes
+    private lateinit var adapterNotesDelete: AdapterNotes
+    private lateinit var homeList: MutableList<NoteResponse>
+    private lateinit var deletedList: MutableList<NoteResponse>
 
-    private var isRecyclerViewVisible = false
-
-    companion object {
-        private const val KEY_SELECTED_DATE = "KEY_SELECTED_DATE"
-    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -70,12 +77,12 @@ class HomeFragment : Fragment(), OnItemClickListener {
 
         fragmentHomeBinding.recyclerViewHomeFragment.setHasFixedSize(true)
         fragmentHomeBinding.recyclerViewHomeFragment.setItemViewCacheSize(13)
+        noteViewModel.getNotes()
         fragmentHomeBinding.recyclerViewHomeFragment.layoutManager =
-            LinearLayoutManager(context)
-        adapterToDoInComplete =
-            AdapterToDo(requireContext(), this, inCompleteList, completeList, false)
-        fragmentHomeBinding.recyclerViewInCompleteHomeFragment.adapter = adapterToDoInComplete
-
+            StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL)
+//        adapterNotes =
+//            AdapterNotes(requireContext(), this, homeList, deletedList, false)
+        fragmentHomeBinding.recyclerViewHomeFragment.adapter = adapterNotes
 
 
     }
@@ -109,8 +116,13 @@ class HomeFragment : Fragment(), OnItemClickListener {
 
     }
 
-    override fun onItemClickListener(position: Int, isComplete: Boolean) {
+    override fun onItemClickListener(noteResponse: NoteResponse,position: Int, isDeleted: Boolean) {
+        val bundle = Bundle()
+        bundle.putString("note",Gson().toJson(noteResponse))
+        if (!isDeleted) {
 
+
+        }
 
     }
 
@@ -170,6 +182,30 @@ class HomeFragment : Fragment(), OnItemClickListener {
         super.onViewCreated(view, savedInstanceState)
 
         navController = Navigation.findNavController(view)
+
+
+        listeners()
+
+        noteViewModel.notesLiveData.observe(viewLifecycleOwner, Observer {
+            fragmentHomeBinding.progressBarHomeFragment.visibility = View.GONE
+            when (it) {
+                is NetworkResult.Success -> {
+                    adapterNotes.submitList(it.data)
+                }
+
+                is NetworkResult.Error -> {
+                    Toast.makeText(requireContext(), it.message.toString(), Toast.LENGTH_SHORT)
+                        .show()
+                }
+
+                is NetworkResult.Loading -> {
+                    fragmentHomeBinding.progressBarHomeFragment.visibility = View.VISIBLE
+                }
+
+                else -> {}
+            }
+
+        })
 
     }
 

@@ -10,6 +10,22 @@
     tools:context=".fragments.HomeFragment">
 
     <LinearLayout
+        android:id="@+id/progressBarHomeFragment"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/topLayout"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:visibility="gone">
+
+        <ProgressBar
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center" />
+
+    </LinearLayout>
+
+    <LinearLayout
         android:id="@+id/topLayout"
         style="@style/StatusBarLayoutStyle"
         android:layout_width="match_parent"
@@ -22,7 +38,7 @@
             android:layout_height="135dp"
             android:layout_weight="1"
             android:gravity="center_vertical"
-            android:text="To Do List"
+            android:text="MemoEase"
             android:textSize="40sp" />
 
         <ImageView
@@ -51,7 +67,8 @@
                 android:id="@+id/recyclerViewHomeFragment"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="20dp" />
+                android:layout_marginTop="20dp"
+                tools:listitem="@layout/notes_item" />
 
         </LinearLayout>
 
