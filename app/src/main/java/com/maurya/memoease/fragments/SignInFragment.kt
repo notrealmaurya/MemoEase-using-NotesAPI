@@ -7,29 +7,38 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
+import androidx.fragment.app.viewModels
+import androidx.lifecycle.Observer
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
-import com.google.firebase.auth.FirebaseAuth
+import com.maurya.memoease.AuthenticationViewmodel
 import com.maurya.memoease.R
+import com.maurya.memoease.SharedPreferenceHelper
 import com.maurya.memoease.databinding.FragmentSignInBinding
+import com.maurya.memoease.models.UserRequest
+import com.maurya.memoease.utils.NetworkResult
+import javax.inject.Inject
 
 
 class SignInFragment : Fragment() {
 
     private lateinit var fragmentSignInBinding: FragmentSignInBinding
+    private val fragmentSignInBindingNull get() = fragmentSignInBinding!!
     private lateinit var navController: NavController
-    private lateinit var auth: FirebaseAuth
     private var isLoading: Boolean = false
+    private val authViewModel by activityViewModels<AuthenticationViewmodel>()
 
+    @Inject
+    lateinit var sharedPreferenceHelper: SharedPreferenceHelper
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         fragmentSignInBinding = FragmentSignInBinding.inflate(inflater, container, false)
-        val view = fragmentSignInBinding.root
+        val view = fragmentSignInBindingNull.root
 
 
-        listeners()
         return view;
     }
 
@@ -40,6 +49,29 @@ class SignInFragment : Fragment() {
         navController = Navigation.findNavController(view)
 
 
+        listeners()
+
+        authViewModel.userResponseLiveData.observe(viewLifecycleOwner, Observer {
+            loading(false)
+            when (it) {
+                is NetworkResult.Success -> {
+                    sharedPreferenceHelper.saveToken(it.data!!.token)
+                    navController.navigate(R.id.action_signInFragment_to_homeFragment)
+                }
+
+                is NetworkResult.Error -> {
+                    showToast(it.message.toString())
+                    loading(false)
+                }
+
+                is NetworkResult.Loading -> {
+                    loading(true)
+                }
+
+                else -> {}
+            }
+
+        })
 
     }
 
@@ -54,12 +86,12 @@ class SignInFragment : Fragment() {
             }
         }
 
-        fragmentSignInBinding.loginGoogleButtonSignInFragment.setOnClickListener{
-            Toast.makeText(context,"Feature coming soon",Toast.LENGTH_SHORT).show()
+        fragmentSignInBinding.loginGoogleButtonSignInFragment.setOnClickListener {
+            Toast.makeText(context, "Feature coming soon", Toast.LENGTH_SHORT).show()
         }
 
-        fragmentSignInBinding.forgetPasswordSignInFragment.setOnClickListener{
-            Toast.makeText(context,"Feature coming soon",Toast.LENGTH_SHORT).show()
+        fragmentSignInBinding.forgetPasswordSignInFragment.setOnClickListener {
+            Toast.makeText(context, "Feature coming soon", Toast.LENGTH_SHORT).show()
         }
 
     }
@@ -70,6 +102,10 @@ class SignInFragment : Fragment() {
 
         val email = fragmentSignInBinding.emailSignInFragment.text.toString().trim()
         val password = fragmentSignInBinding.passwordSignInFragment.text.toString().trim()
+        val userName = ""
+
+
+        authViewModel.loginUser(UserRequest(email, password, userName))
 
 
     }

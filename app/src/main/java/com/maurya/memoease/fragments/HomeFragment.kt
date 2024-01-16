@@ -61,22 +61,22 @@ class HomeFragment : Fragment(), OnItemClickListener {
 
     private fun displayItems() {
 
-        fragmentHomeBinding.recyclerViewInCompleteHomeFragment.setHasFixedSize(true)
-        fragmentHomeBinding.recyclerViewInCompleteHomeFragment.setItemViewCacheSize(13)
-        fragmentHomeBinding.recyclerViewInCompleteHomeFragment.layoutManager =
-            LinearLayoutManager(context)
-//        adapterToDoInComplete =
-//            AdapterToDo(requireContext(), this, inCompleteList, completeList, false)
-//        fragmentHomeBinding.recyclerViewInCompleteHomeFragment.adapter = adapterToDoInComplete
-
-
-        fragmentHomeBinding.recyclerViewCompleteHomeFragment.setHasFixedSize(true)
-        fragmentHomeBinding.recyclerViewCompleteHomeFragment.setItemViewCacheSize(13)
-        fragmentHomeBinding.recyclerViewCompleteHomeFragment.layoutManager =
-            LinearLayoutManager(context)
-//        adapterToDoComplete =
-//            AdapterToDo(requireContext(), this, inCompleteList, completeList, true)
-//        fragmentHomeBinding.recyclerViewCompleteHomeFragment.adapter = adapterToDoComplete
+//        fragmentHomeBinding.recyclerViewInCompleteHomeFragment.setHasFixedSize(true)
+//        fragmentHomeBinding.recyclerViewInCompleteHomeFragment.setItemViewCacheSize(13)
+//        fragmentHomeBinding.recyclerViewInCompleteHomeFragment.layoutManager =
+//            LinearLayoutManager(context)
+////        adapterToDoInComplete =
+////            AdapterToDo(requireContext(), this, inCompleteList, completeList, false)
+////        fragmentHomeBinding.recyclerViewInCompleteHomeFragment.adapter = adapterToDoInComplete
+//
+//
+//        fragmentHomeBinding.recyclerViewCompleteHomeFragment.setHasFixedSize(true)
+//        fragmentHomeBinding.recyclerViewCompleteHomeFragment.setItemViewCacheSize(13)
+//        fragmentHomeBinding.recyclerViewCompleteHomeFragment.layoutManager =
+//            LinearLayoutManager(context)
+////        adapterToDoComplete =
+////            AdapterToDo(requireContext(), this, inCompleteList, completeList, true)
+////        fragmentHomeBinding.recyclerViewCompleteHomeFragment.adapter = adapterToDoComplete
 
 
     }

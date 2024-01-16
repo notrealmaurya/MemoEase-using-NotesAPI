@@ -1,20 +1,26 @@
 package com.maurya.memoease.fragments
 
 import android.os.Bundle
+import android.os.TokenWatcher
 import android.util.Patterns
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.Observer
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
 import com.maurya.memoease.AuthenticationViewmodel
 import com.maurya.memoease.R
+import com.maurya.memoease.SharedPreferenceHelper
 import com.maurya.memoease.databinding.FragmentSignUpBinding
 import com.maurya.memoease.models.UserRequest
+import com.maurya.memoease.utils.NetworkResult
 import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class SignUpFragment : Fragment() {
@@ -23,7 +29,10 @@ class SignUpFragment : Fragment() {
     private val fragmentSignUpBindingNull get() = fragmentSignUpBinding!!
     private lateinit var navController: NavController
     private var isLoading: Boolean = false
-    private val authViewModel by viewModels<AuthenticationViewmodel>()
+    private val authViewModel by activityViewModels<AuthenticationViewmodel>()
+
+    @Inject
+    lateinit var sharedPreferenceHelper: SharedPreferenceHelper
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -43,6 +52,28 @@ class SignUpFragment : Fragment() {
 
 
         listeners()
+
+        authViewModel.userResponseLiveData.observe(viewLifecycleOwner, Observer {
+            loading(false)
+            when (it) {
+                is NetworkResult.Success -> {
+                    sharedPreferenceHelper.saveToken(it.data!!.token)
+                    navController.navigate(R.id.action_signUpFragment_to_homeFragment)
+                }
+
+                is NetworkResult.Error -> {
+                    showToast(it.message.toString())
+                    loading(false)
+                }
+
+                is NetworkResult.Loading -> {
+                    loading(true)
+                }
+
+                else -> {}
+            }
+
+        })
 
 
     }
@@ -103,8 +134,10 @@ class SignUpFragment : Fragment() {
         ) {
             showToast("Enter Valid Email ")
             false
-        } else if (fragmentSignUpBinding.passwordSignUpFragment.text.toString().trim().isEmpty()) {
-            showToast("Enter Password ")
+        } else if (fragmentSignUpBinding.passwordSignUpFragment.text.toString().trim()
+                .isEmpty() && fragmentSignUpBinding.passwordSignUpFragment.text.length >= 5
+        ) {
+            showToast("Password length should be greater than 5 ")
             false
         } else if (fragmentSignUpBinding.passwordConfirmSignUpFragment.text.toString().trim()
                 .isEmpty()

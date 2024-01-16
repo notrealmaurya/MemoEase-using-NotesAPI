@@ -11,12 +11,17 @@ import androidx.navigation.NavController
 import androidx.navigation.Navigation
 import com.google.firebase.auth.FirebaseAuth
 import com.maurya.memoease.R
+import com.maurya.memoease.SharedPreferenceHelper
 import com.maurya.memoease.databinding.FragmentSplashBinding
+import javax.inject.Inject
 
 class SplashFragment : Fragment() {
 
     private lateinit var fragmentSplashBinding: FragmentSplashBinding
     private lateinit var navController: NavController
+
+    @Inject
+    lateinit var sharedPreferenceHelper: SharedPreferenceHelper
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -31,9 +36,14 @@ class SplashFragment : Fragment() {
 
         navController = Navigation.findNavController(view)
 
+
         Handler(Looper.myLooper()!!).postDelayed(
             {
-                navController.navigate(R.id.action_splashFragment_to_signInFragment)
+                if (sharedPreferenceHelper.getToken() != null) {
+                    navController.navigate(R.id.action_splashFragment_to_homeFragment)
+                } else {
+                    navController.navigate(R.id.action_splashFragment_to_signInFragment)
+                }
             }, 2000
         )
     }
