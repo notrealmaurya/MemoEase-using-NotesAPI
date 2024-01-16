@@ -13,4 +13,4 @@
 .externalNativeBuild
 .cxx
 local.properties
-/app/src/main/java/com/maurya/memoease/Constants.kt
+/app/src/main/java/com/maurya/memoease/utils/Constants.kt

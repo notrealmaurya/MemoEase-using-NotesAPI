@@ -1,6 +1,6 @@
 package com.maurya.memoease.di
 
-import com.maurya.memoease.Constants.BASE_URL
+import com.maurya.memoease.utils.Constants.BASE_URL
 import com.maurya.memoease.api.UserAPI
 import dagger.Module
 import dagger.Provides

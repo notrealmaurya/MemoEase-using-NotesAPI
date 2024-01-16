@@ -7,18 +7,23 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
+import com.maurya.memoease.AuthenticationViewmodel
 import com.maurya.memoease.R
 import com.maurya.memoease.databinding.FragmentSignUpBinding
+import com.maurya.memoease.models.UserRequest
+import dagger.hilt.android.AndroidEntryPoint
 
-
+@AndroidEntryPoint
 class SignUpFragment : Fragment() {
 
     private lateinit var fragmentSignUpBinding: FragmentSignUpBinding
     private val fragmentSignUpBindingNull get() = fragmentSignUpBinding!!
     private lateinit var navController: NavController
     private var isLoading: Boolean = false
+    private val authViewModel by viewModels<AuthenticationViewmodel>()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -66,8 +71,11 @@ class SignUpFragment : Fragment() {
     private fun signUp() {
         loading(true)
 
+        val userName = fragmentSignUpBinding.userNameSignUpFragment.text.toString().trim()
         val email = fragmentSignUpBinding.emailSignUpFragment.text.toString().trim()
         val password = fragmentSignUpBinding.passwordSignUpFragment.text.toString().trim()
+
+        authViewModel.registerUser(UserRequest(email, password, userName))
 
     }
 
@@ -80,8 +88,6 @@ class SignUpFragment : Fragment() {
             fragmentSignUpBinding.signupButtonSignUpFragment.visibility = View.VISIBLE
         }
     }
-
-
 
 
     private fun isValidSignUpDetails(): Boolean {
