@@ -1,14 +1,19 @@
 package com.maurya.memoease.di
 
 import com.maurya.memoease.api.AuthenticationInterceptor
+import com.maurya.memoease.api.NotesAPI
 import com.maurya.memoease.utils.Constants.BASE_URL
 import com.maurya.memoease.api.UserAPI
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
+import okhttp3.OkHttpClient
 import retrofit2.Retrofit
+import retrofit2.Retrofit.Builder
 import retrofit2.converter.gson.GsonConverterFactory
+import retrofit2.create
+import java.util.concurrent.TimeUnit
 import javax.inject.Singleton
 
 @InstallIn(SingletonComponent::class)
@@ -18,25 +23,44 @@ class NetworkModule {
 
     @Singleton
     @Provides
-    fun providesRetrofit():Retrofit{
+    fun providesRetrofitBuilder(): Retrofit.Builder {
         return Retrofit.Builder()
             .addConverterFactory(GsonConverterFactory.create())
             .baseUrl(BASE_URL)
-            .build()
-    }
-
-    fun provideOKHTTPClient(authenticationInterceptor: AuthenticationInterceptor){
-
-
     }
 
 
     @Singleton
     @Provides
-    fun providesUserAPI(retrofit: Retrofit):UserAPI{
-        return  retrofit.create(UserAPI::class.java)
+    fun provideOKHTTPClient(authenticationInterceptor: AuthenticationInterceptor): OkHttpClient {
+        return OkHttpClient.Builder()
+            .addInterceptor(authenticationInterceptor)
+            .connectTimeout(30, TimeUnit.SECONDS)
+            .readTimeout(30, TimeUnit.SECONDS)
+            .writeTimeout(30, TimeUnit.SECONDS)
+            .build()
     }
 
 
+    @Singleton
+    @Provides
+    fun providesUserAPI(retrofitBuilder: Retrofit.Builder): UserAPI {
+        return retrofitBuilder.build().create(UserAPI::class.java)
+    }
+
+
+    fun provideAuthRetrofit(okHttpClient: OkHttpClient): Retrofit {
+        return Retrofit.Builder()
+            .baseUrl(BASE_URL)
+            .addConverterFactory(GsonConverterFactory.create())
+            .client(okHttpClient)
+            .build()
+    }
+
+
+    fun providesNoteAPI(retrofitBuilder: Retrofit.Builder)
+            : NotesAPI {
+        return retrofitBuilder.build().create(NotesAPI::class.java)
+    }
 
 }
