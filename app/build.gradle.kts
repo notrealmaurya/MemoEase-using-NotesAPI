@@ -2,6 +2,7 @@ plugins {
     alias(libs.plugins.androidApplication)
     alias(libs.plugins.jetbrainsKotlinAndroid)
     id("kotlin-kapt")
+    id ("dagger.hilt.android.plugin")
 }
 
 android {
@@ -54,11 +55,11 @@ dependencies {
     //retrofit
     implementation(libs.retrofit)
     implementation(libs.converter.gson)
-    implementation (libs.okhttp)
+    implementation("com.squareup.okhttp3:okhttp:4.12.0")
 
     //hilt injection
-    implementation(libs.hilt.android)
-    kapt(libs.hilt.android.compiler)
+    implementation("com.google.dagger:hilt-android:2.48")
+    kapt("com.google.dagger:hilt-android-compiler:2.48")
 
     //lifecycle
     implementation(libs.androidx.lifecycle.viewmodel.ktx)
@@ -70,31 +71,6 @@ dependencies {
     // Navigation Component
     implementation(libs.androidx.navigation.fragment.ktx)
     implementation(libs.androidx.navigation.ui.ktx)
-
-    //retrofit
-    implementation(libs.retrofit)
-    implementation(libs.converter.gson)
-    implementation (libs.okhttp)
-
-    //hilt injection
-    implementation(libs.hilt.android)
-    kapt(libs.hilt.android.compiler)
-
-    //lifecycle
-    implementation(libs.androidx.lifecycle.viewmodel.ktx)
-    implementation(libs.androidx.lifecycle.livedata.ktx)
-
-    //coroutines
-    implementation(libs.kotlinx.coroutines.android)
-
-    // Navigation Component
-    implementation(libs.androidx.navigation.fragment.ktx)
-    implementation(libs.androidx.navigation.ui.ktx)
-
-    //spin kit
-    //noinspection UseTomlInstead
-    implementation("com.github.ybq:Android-SpinKit:1.4.0")
-
 
     //lottie
     implementation(libs.lottie)

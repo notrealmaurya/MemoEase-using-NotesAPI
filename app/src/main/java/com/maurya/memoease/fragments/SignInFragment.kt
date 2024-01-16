@@ -16,7 +16,6 @@ import com.maurya.memoease.databinding.FragmentSignInBinding
 
 class SignInFragment : Fragment() {
 
-
     private lateinit var fragmentSignInBinding: FragmentSignInBinding
     private lateinit var navController: NavController
     private lateinit var auth: FirebaseAuth
@@ -38,9 +37,8 @@ class SignInFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-
         navController = Navigation.findNavController(view)
-        auth = FirebaseAuth.getInstance()
+
 
 
     }
@@ -73,21 +71,6 @@ class SignInFragment : Fragment() {
         val email = fragmentSignInBinding.emailSignInFragment.text.toString().trim()
         val password = fragmentSignInBinding.passwordSignInFragment.text.toString().trim()
 
-        auth.signInWithEmailAndPassword(email, password)
-            .addOnCompleteListener { task ->
-                if (task.isSuccessful) {
-                    Toast.makeText(
-                        context,
-                        "Signed In",
-                        Toast.LENGTH_SHORT
-                    ).show()
-                    navController.navigate(R.id.action_signInFragment_to_homeFragment)
-                }
-            }
-            .addOnFailureListener {
-                Toast.makeText(context, it.localizedMessage, Toast.LENGTH_SHORT).show()
-                loading(false)
-            }
 
     }
 

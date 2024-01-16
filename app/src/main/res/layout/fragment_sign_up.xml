@@ -7,7 +7,7 @@
     android:layout_height="match_parent"
     android:gravity="center"
     android:orientation="vertical"
-    tools:context=".Fragments.SignUpFragment">
+    tools:context=".fragments.SignUpFragment">
 
 
     <LinearLayout
@@ -23,11 +23,10 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="10dp"
             android:padding="15dp"
-            android:text="To Do List"
+            android:text="MemoEase"
             android:textSize="40sp" />
 
     </LinearLayout>
-
 
 
     <LinearLayout
@@ -36,8 +35,7 @@
         android:layout_height="match_parent"
         android:layout_above="@id/bottomLayout"
         android:layout_below="@id/topLayout"
-        android:layout_marginStart="20dp"
-        android:layout_marginEnd="20dp"
+        android:layout_marginHorizontal="30dp"
         android:gravity="center"
         android:orientation="vertical">
 
@@ -49,14 +47,14 @@
             android:textAllCaps="false"
             app:icon="@drawable/icon_google"
             app:iconPadding="10dp"
-            app:iconTint="@null"
-            app:iconSize="20dp" />
+            app:iconSize="20dp"
+            app:iconTint="@null" />
 
         <FrameLayout
             android:layout_width="250dp"
+            android:layout_height="wrap_content"
             android:layout_marginTop="20dp"
-            android:layout_marginBottom="15dp"
-            android:layout_height="wrap_content">
+            android:layout_marginBottom="15dp">
 
             <View
                 android:layout_width="match_parent"
@@ -65,16 +63,29 @@
                 android:background="@android:color/black" />
 
             <TextView
+                style="@style/LayoutStyle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:gravity="center"
                 android:paddingStart="5dp"
                 android:paddingEnd="5dp"
-                style="@style/LayoutStyle"
                 android:text="OR" />
 
         </FrameLayout>
+
+        <EditText
+            android:id="@+id/userNameSignUpFragment"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:layout_margin="10dp"
+            android:background="@drawable/edittext_bg"
+            android:hint="userName "
+            android:imeOptions="actionNext"
+            android:importantForAutofill="no"
+            android:inputType="text"
+            android:paddingStart="20dp"
+            android:textSize="14sp" />
 
         <EditText
             android:id="@+id/emailSignUpFragment"
@@ -153,13 +164,12 @@
     </LinearLayout>
 
 
-
     <LinearLayout
         android:id="@+id/bottomLayout"
+        style="@style/BottomBarLayoutStyle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        style="@style/BottomBarLayoutStyle"
         android:orientation="vertical">
 
         <TextView
@@ -169,7 +179,7 @@
             android:layout_gravity="center"
             android:layout_marginTop="20dp"
             android:layout_marginBottom="20dp"
-            android:text="Have an account? Log in  "
+            android:text="@string/HaveAccountSignUpFragment"
             android:textSize="14sp"
             android:textStyle="normal" />
 

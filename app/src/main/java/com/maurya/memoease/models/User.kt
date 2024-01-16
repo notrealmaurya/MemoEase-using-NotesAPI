@@ -4,6 +4,7 @@ import android.content.Context
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
 import android.os.Build
+import android.widget.Toast
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Locale
@@ -17,7 +18,6 @@ data class User(
     val updatedAt: String,
     val username: String
 )
-
 
 
 fun formatDate(selectedDateMillis: Long): String {
@@ -78,3 +78,4 @@ fun checkInternet(context: Context): Boolean {
         return networkInfo.isConnected
     }
 }
+
