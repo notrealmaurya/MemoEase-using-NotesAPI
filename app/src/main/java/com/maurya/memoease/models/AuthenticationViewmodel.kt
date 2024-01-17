@@ -1,4 +1,4 @@
-package com.maurya.memoease
+package com.maurya.memoease.models
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
