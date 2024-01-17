@@ -9,10 +9,11 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.maurya.memoease.databinding.NotesItemBinding
 import com.maurya.memoease.models.NoteResponse
+import kotlin.reflect.KFunction1
 
 class AdapterNotes(
     private val context: Context,
-    private var listener: OnItemClickListener,
+    private val onNoteClicked: (NoteResponse) -> Unit,
     private val homeList: MutableList<NoteResponse> = mutableListOf(),
     private val deletedList: MutableList<NoteResponse> = mutableListOf(),
     private val isDeleted: Boolean
@@ -47,24 +48,22 @@ class AdapterNotes(
     }
 
 
-    inner class MemoEaseFileHolder(binding: NotesItemBinding) :
-        RecyclerView.ViewHolder(binding.root),
-        View.OnClickListener {
+    inner class MemoEaseFileHolder(private val binding: NotesItemBinding) :
+        RecyclerView.ViewHolder(binding.root) {
         val noteName = binding.notesNameNotesItem
         val noteDescription = binding.notesDetailsNotesItem
         val noteDate = binding.notesDateNotesItem
         private val root = binding.root
 
-        init {
-            root.setOnClickListener(this)
-        }
-
-        override fun onClick(p0: View?) {
-            val position = adapterPosition
-            if (position != RecyclerView.NO_POSITION) {
-                listener.onItemClickListener(position, isDeleted)
+        fun bind(note: NoteResponse) {
+            binding.notesNameNotesItem.text = note.title
+            binding.notesDetailsNotesItem.text = note.description
+            binding.notesDateNotesItem.text = note.createdAt
+            binding.root.setOnClickListener {
+                onNoteClicked(note)
             }
         }
+
 
     }
 

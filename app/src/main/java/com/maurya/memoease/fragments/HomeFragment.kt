@@ -1,18 +1,15 @@
 package com.maurya.memoease.fragments
 
-import android.content.Context
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
-import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
-import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.google.android.material.snackbar.Snackbar
 import com.google.gson.Gson
@@ -20,16 +17,11 @@ import com.maurya.memoease.AdapterNotes
 import com.maurya.memoease.NoteViewModel
 import com.maurya.memoease.OnItemClickListener
 import com.maurya.memoease.R
-import com.maurya.memoease.api.NotesAPI
 import com.maurya.memoease.databinding.FragmentHomeBinding
 import com.maurya.memoease.models.NoteResponse
 import com.maurya.memoease.models.checkInternet
 import com.maurya.memoease.utils.NetworkResult
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import javax.inject.Inject
 
 @AndroidEntryPoint
 class HomeFragment : Fragment(), OnItemClickListener {
@@ -50,12 +42,6 @@ class HomeFragment : Fragment(), OnItemClickListener {
     ): View {
         fragmentHomeBinding = FragmentHomeBinding.inflate(inflater, container, false)
         val view = fragmentHomeBinding.root
-
-
-
-
-
-
 
 
         fragmentHomeBinding.recyclerViewHomeFragment.isNestedScrollingEnabled = false
@@ -80,8 +66,8 @@ class HomeFragment : Fragment(), OnItemClickListener {
         noteViewModel.getNotes()
         fragmentHomeBinding.recyclerViewHomeFragment.layoutManager =
             StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL)
-//        adapterNotes =
-//            AdapterNotes(requireContext(), this, homeList, deletedList, false)
+        adapterNotes =
+            AdapterNotes(requireContext(), ::onNoteClicked, homeList, deletedList, false)
         fragmentHomeBinding.recyclerViewHomeFragment.adapter = adapterNotes
 
 
@@ -116,14 +102,24 @@ class HomeFragment : Fragment(), OnItemClickListener {
 
     }
 
-    override fun onItemClickListener(noteResponse: NoteResponse,position: Int, isDeleted: Boolean) {
+    override fun onItemClickListener(
+        noteResponse: NoteResponse,
+        position: Int,
+        isDeleted: Boolean
+    ) {
         val bundle = Bundle()
-        bundle.putString("note",Gson().toJson(noteResponse))
+        bundle.putString("note", Gson().toJson(noteResponse))
         if (!isDeleted) {
 
 
         }
 
+    }
+
+    private fun onNoteClicked(noteResponse: NoteResponse) {
+        val bundle = Bundle()
+        bundle.putString("note", Gson().toJson(noteResponse))
+        navController.navigate(R.id.action_mainFragment_to_noteFragment, bundle)
     }
 
 
