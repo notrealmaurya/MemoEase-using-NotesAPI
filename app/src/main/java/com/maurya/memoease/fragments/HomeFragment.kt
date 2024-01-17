@@ -119,7 +119,7 @@ class HomeFragment : Fragment(), OnItemClickListener {
     private fun onNoteClicked(noteResponse: NoteResponse) {
         val bundle = Bundle()
         bundle.putString("note", Gson().toJson(noteResponse))
-        navController.navigate(R.id.action_mainFragment_to_noteFragment, bundle)
+        navController.navigate(R.id.action_homeFragment_to_notesFragment, bundle)
     }
 
 
