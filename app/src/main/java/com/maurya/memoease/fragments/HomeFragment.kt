@@ -24,7 +24,7 @@ import com.maurya.memoease.utils.NetworkResult
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
-class HomeFragment : Fragment(), OnItemClickListener {
+class HomeFragment : Fragment() {
 
 
     private lateinit var fragmentHomeBinding: FragmentHomeBinding
@@ -102,75 +102,11 @@ class HomeFragment : Fragment(), OnItemClickListener {
 
     }
 
-    override fun onItemClickListener(
-        noteResponse: NoteResponse,
-        position: Int,
-        isDeleted: Boolean
-    ) {
-        val bundle = Bundle()
-        bundle.putString("note", Gson().toJson(noteResponse))
-        if (!isDeleted) {
-
-
-        }
-
-    }
 
     private fun onNoteClicked(noteResponse: NoteResponse) {
         val bundle = Bundle()
         bundle.putString("note", Gson().toJson(noteResponse))
         navController.navigate(R.id.action_homeFragment_to_notesFragment, bundle)
-    }
-
-
-    override fun onItemCheckedChange(position: Int, isChecked: Boolean, isCompleteList: Boolean) {
-//
-//        val incompleteTasksRef = dataBaseRef.child("incompleteTasks")
-//        val completeTasksRef = dataBaseRef.child("completeTasks")
-//
-//        if (isCompleteList) {
-//            if (!isChecked && completeList.size > position) {
-//                val completedItem = completeList[position]
-//                val taskId = completedItem.id
-//                completeTasksRef.child(taskId).removeValue()
-//
-//                val incompleteTask = DataToDo(
-//                    taskId,
-//                    completedItem.taskName,
-//                    completedItem.taskDetails,
-//                    completedItem.taskCompleteUpToDate,
-//                    completedItem.isImportant,
-//                    false
-//                )
-//                incompleteTasksRef.child(taskId).setValue(incompleteTask)
-//
-//                adapterToDoComplete.notifyDataSetChanged()
-//                adapterToDoInComplete.notifyDataSetChanged()
-//                Toast.makeText(context, "Task Marked as InComplete", Toast.LENGTH_SHORT).show()
-//            }
-//        } else {
-//            if (isChecked && inCompleteList.size > position) {
-//                val inCompletedItem = inCompleteList[position]
-//
-//                val taskId = inCompletedItem.id
-//                incompleteTasksRef.child(taskId).removeValue()
-//
-//                val completeTask = DataToDo(
-//                    taskId,
-//                    inCompletedItem.taskName,
-//                    inCompletedItem.taskDetails,
-//                    inCompletedItem.taskCompleteUpToDate,
-//                    inCompletedItem.isImportant,
-//                    true
-//                )
-//                completeTasksRef.child(taskId).setValue(completeTask)
-//
-//                adapterToDoComplete.notifyDataSetChanged()
-//                adapterToDoInComplete.notifyDataSetChanged()
-//                Toast.makeText(context, "Task Completed", Toast.LENGTH_SHORT).show()
-//            }
-//        }
-
     }
 
 
