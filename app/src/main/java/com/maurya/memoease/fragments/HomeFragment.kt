@@ -100,6 +100,11 @@ class HomeFragment : Fragment() {
         }
 
 
+        fragmentHomeBinding.addNoteHomeFragment.setOnClickListener{
+            navController.navigate(R.id.action_homeFragment_to_notesFragment)
+        }
+
+
     }
 
 

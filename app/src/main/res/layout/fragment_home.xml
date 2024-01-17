@@ -85,7 +85,7 @@
         android:orientation="vertical">
 
         <com.airbnb.lottie.LottieAnimationView
-            android:id="@+id/addTaskHomeFragment"
+            android:id="@+id/addNoteHomeFragment"
             style="@style/AddTaskStyle"
             android:layout_width="60dp"
             android:layout_height="60dp"
