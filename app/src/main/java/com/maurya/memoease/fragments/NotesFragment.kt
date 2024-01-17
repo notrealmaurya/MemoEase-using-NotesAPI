@@ -1,13 +1,9 @@
 package com.maurya.memoease.fragments
 
-import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.Canvas
-import android.net.Uri
 import android.os.Bundle
-import android.os.Environment
-import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -18,21 +14,13 @@ import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import com.google.gson.Gson
 import com.maurya.memoease.NoteViewModel
-import com.maurya.memoease.R
 import com.maurya.memoease.databinding.FragmentNotesBinding
-import com.maurya.memoease.databinding.FragmentSignInBinding
-import com.maurya.memoease.databinding.FragmentSplashBinding
 import com.maurya.memoease.models.NoteRequest
 import com.maurya.memoease.models.NoteResponse
 import com.maurya.memoease.utils.NetworkResult
-import com.maurya.memoease.utils.getBitmapFromView
 import com.maurya.memoease.utils.saveBitmapAsImage
 import dagger.hilt.android.AndroidEntryPoint
-import java.io.File
-import java.io.FileOutputStream
-import java.io.IOException
 import java.text.SimpleDateFormat
-import java.util.Date
 import java.util.Locale
 
 
