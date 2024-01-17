@@ -18,9 +18,10 @@ import com.maurya.memoease.SharedPreferenceHelper
 import com.maurya.memoease.databinding.FragmentSignInBinding
 import com.maurya.memoease.models.UserRequest
 import com.maurya.memoease.utils.NetworkResult
+import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
-
+@AndroidEntryPoint
 class SignInFragment : Fragment() {
 
     private lateinit var fragmentSignInBinding: FragmentSignInBinding

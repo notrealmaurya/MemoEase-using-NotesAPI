@@ -34,6 +34,7 @@ class NetworkModule {
     fun provideOKHTTPClient(authenticationInterceptor: AuthenticationInterceptor): OkHttpClient {
         return OkHttpClient.Builder()
             .addInterceptor(authenticationInterceptor)
+            .retryOnConnectionFailure(true)
             .build()
     }
 

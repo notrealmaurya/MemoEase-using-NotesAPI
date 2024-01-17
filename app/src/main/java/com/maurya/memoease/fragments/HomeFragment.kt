@@ -1,6 +1,7 @@
 package com.maurya.memoease.fragments
 
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -15,12 +16,11 @@ import com.google.android.material.snackbar.Snackbar
 import com.google.gson.Gson
 import com.maurya.memoease.AdapterNotes
 import com.maurya.memoease.NoteViewModel
-import com.maurya.memoease.OnItemClickListener
 import com.maurya.memoease.R
 import com.maurya.memoease.databinding.FragmentHomeBinding
 import com.maurya.memoease.models.NoteResponse
-import com.maurya.memoease.models.checkInternet
 import com.maurya.memoease.utils.NetworkResult
+import com.maurya.memoease.utils.checkInternet
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -31,9 +31,9 @@ class HomeFragment : Fragment() {
     private lateinit var navController: NavController
     private val noteViewModel by viewModels<NoteViewModel>()
     private lateinit var adapterNotes: AdapterNotes
-    private lateinit var adapterNotesDelete: AdapterNotes
-    private lateinit var homeList: MutableList<NoteResponse>
-    private lateinit var deletedList: MutableList<NoteResponse>
+//    private lateinit var adapterNotesDelete: AdapterNotes
+//    private lateinit var homeList: MutableList<NoteResponse>
+//    private lateinit var deletedList: MutableList<NoteResponse>
 
 
     override fun onCreateView(
@@ -43,40 +43,20 @@ class HomeFragment : Fragment() {
         fragmentHomeBinding = FragmentHomeBinding.inflate(inflater, container, false)
         val view = fragmentHomeBinding.root
 
-
         fragmentHomeBinding.recyclerViewHomeFragment.isNestedScrollingEnabled = false
 
-        fetchDataFromDatabase()
-        displayItems()
+//        homeList = mutableListOf()
+//        deletedList = mutableListOf()
+
+        adapterNotes = AdapterNotes(::onNoteClicked)
+
         listeners()
 
         return view
     }
 
-    private fun fetchDataFromDatabase() {
-
-
-    }
-
-
-    private fun displayItems() {
-
-        fragmentHomeBinding.recyclerViewHomeFragment.setHasFixedSize(true)
-        fragmentHomeBinding.recyclerViewHomeFragment.setItemViewCacheSize(13)
-        noteViewModel.getNotes()
-        fragmentHomeBinding.recyclerViewHomeFragment.layoutManager =
-            StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL)
-        adapterNotes =
-            AdapterNotes(requireContext(), ::onNoteClicked, homeList, deletedList, false)
-        fragmentHomeBinding.recyclerViewHomeFragment.adapter = adapterNotes
-
-
-    }
 
     private fun listeners() {
-
-        //ToolbarAddTask
-
 
         fragmentHomeBinding.logOutUser.setOnClickListener {
 
@@ -100,7 +80,7 @@ class HomeFragment : Fragment() {
         }
 
 
-        fragmentHomeBinding.addNoteHomeFragment.setOnClickListener{
+        fragmentHomeBinding.addNoteHomeFragment.setOnClickListener {
             navController.navigate(R.id.action_homeFragment_to_notesFragment)
         }
 
@@ -121,13 +101,24 @@ class HomeFragment : Fragment() {
         navController = Navigation.findNavController(view)
 
 
+        fragmentHomeBinding.recyclerViewHomeFragment.setHasFixedSize(true)
+        fragmentHomeBinding.recyclerViewHomeFragment.setItemViewCacheSize(13)
+        noteViewModel.getNotes()
+        fragmentHomeBinding.recyclerViewHomeFragment.layoutManager =
+            StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL)
+        fragmentHomeBinding.recyclerViewHomeFragment.adapter = adapterNotes
+
+
+
         listeners()
 
         noteViewModel.notesLiveData.observe(viewLifecycleOwner, Observer {
             fragmentHomeBinding.progressBarHomeFragment.visibility = View.GONE
             when (it) {
                 is NetworkResult.Success -> {
+                    Log.d("NoteSubmit", "Received data: ${it.data}")
                     adapterNotes.submitList(it.data)
+
                 }
 
                 is NetworkResult.Error -> {

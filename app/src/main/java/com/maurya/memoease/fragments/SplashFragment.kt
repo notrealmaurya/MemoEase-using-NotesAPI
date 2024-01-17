@@ -13,8 +13,11 @@ import com.google.firebase.auth.FirebaseAuth
 import com.maurya.memoease.R
 import com.maurya.memoease.SharedPreferenceHelper
 import com.maurya.memoease.databinding.FragmentSplashBinding
+import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
+
+@AndroidEntryPoint
 class SplashFragment : Fragment() {
 
     private lateinit var fragmentSplashBinding: FragmentSplashBinding

@@ -18,21 +18,21 @@ class NotesRepository @Inject constructor(private var notesAPI: NotesAPI) {
 
     private val _statusLiveData = MutableLiveData<NetworkResult<String>>()
     val statusLiveData: LiveData<NetworkResult<String>> get() = _statusLiveData
-
     suspend fun getNotes() {
         _notesLiveData.postValue(NetworkResult.Loading())
-        val response = notesAPI.getNotes()
-        if (response.isSuccessful && response.body() != null) {
-            _notesLiveData.postValue(NetworkResult.Success(response.body()!!))
-        } else if (response.errorBody() != null) {
-            val errorObject = JSONObject(response.errorBody()!!.charStream().readText())
-            _notesLiveData.postValue(NetworkResult.Error(errorObject.getString("message")))
-        } else {
-            _notesLiveData.postValue(NetworkResult.Error("Something went wrong"))
+        try {
+            val response = notesAPI.getNotes()
+            if (response.isSuccessful) {
+                _notesLiveData.postValue(NetworkResult.Success(response.body()!!))
+            } else {
+                val errorObject = JSONObject(response.errorBody()?.charStream()?.readText() ?: "")
+                _notesLiveData.postValue(NetworkResult.Error(errorObject.getString("message")))
+            }
+        } catch (e: Exception) {
+            _notesLiveData.postValue(NetworkResult.Error("No Notes is available"))
         }
-
-
     }
+
 
 
     suspend fun createNotes(noteRequest: NoteRequest) {
