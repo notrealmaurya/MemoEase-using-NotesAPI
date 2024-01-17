@@ -7,6 +7,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.navigation.NavController
@@ -15,6 +16,7 @@ import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.google.android.material.snackbar.Snackbar
 import com.google.gson.Gson
 import com.maurya.memoease.AdapterNotes
+import com.maurya.memoease.ApplicationMemoEase
 import com.maurya.memoease.NoteViewModel
 import com.maurya.memoease.R
 import com.maurya.memoease.databinding.FragmentHomeBinding
@@ -101,6 +103,8 @@ class HomeFragment : Fragment() {
         navController = Navigation.findNavController(view)
 
 
+
+
         fragmentHomeBinding.recyclerViewHomeFragment.setHasFixedSize(true)
         fragmentHomeBinding.recyclerViewHomeFragment.setItemViewCacheSize(13)
         noteViewModel.getNotes()
@@ -146,7 +150,6 @@ class HomeFragment : Fragment() {
                 "Internet is Not Connected \uD83D\uDE12", Snackbar.LENGTH_LONG
             ).show()
         }
-
 
     }
 

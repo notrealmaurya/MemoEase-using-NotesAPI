@@ -1,12 +1,15 @@
 package com.maurya.memoease
 
 import android.content.Context
+import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import androidx.work.Constraints
 import androidx.work.NetworkType
 import androidx.work.PeriodicWorkRequestBuilder
 import androidx.work.WorkManager
 import androidx.work.Worker
 import androidx.work.WorkerParameters
+import com.google.android.material.snackbar.Snackbar
 import com.maurya.memoease.utils.checkInternet
 import java.util.concurrent.TimeUnit
 
@@ -24,7 +27,11 @@ class InternetCheckWorker(context: Context, workerParams: WorkerParameters) :
 
             return Result.success()
         } else {
-            // No internet connectivity
+            Toast.makeText(
+                applicationContext,
+                "No internet Connected Please Connect and try again!!",
+                Toast.LENGTH_SHORT
+            ).show()
             return Result.retry()
         }
     }
