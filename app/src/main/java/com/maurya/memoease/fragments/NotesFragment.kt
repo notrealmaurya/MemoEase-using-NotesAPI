@@ -13,7 +13,7 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import com.google.gson.Gson
-import com.maurya.memoease.NoteViewModel
+import com.maurya.memoease.models.NoteViewModel
 import com.maurya.memoease.databinding.FragmentNotesBinding
 import com.maurya.memoease.models.NoteRequest
 import com.maurya.memoease.models.NoteResponse
@@ -99,6 +99,7 @@ class NotesFragment : Fragment() {
             val desc = fragmentNotesBinding.notesDescEditTextNotesItem.text.toString()
             val noteRequest = NoteRequest(desc, title)
             if (note == null) {
+                fragmentNotesBinding.popSheet.visibility=View.GONE
                 noteViewModel.createNote(noteRequest)
             } else {
                 noteViewModel.updateNote(note!!._id, noteRequest)

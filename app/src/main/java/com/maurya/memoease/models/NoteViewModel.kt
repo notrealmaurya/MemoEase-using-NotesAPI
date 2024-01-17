@@ -1,5 +1,6 @@
-package com.maurya.memoease
+package com.maurya.memoease.models
 
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.maurya.memoease.models.NoteRequest
@@ -15,10 +16,15 @@ class NoteViewModel @Inject constructor(private val notesRepository: NotesReposi
     val notesLiveData get() = notesRepository.notesLiveData
     val statusLiveData get() = notesRepository.statusLiveData
 
+
     fun getNotes() {
 
         viewModelScope.launch {
-            notesRepository.getNotes()
+            try {
+                notesRepository.getNotes()
+            } catch (e: Exception) {
+                val localNotes = notesRepository.getLocalNotes()
+            }
         }
     }
 

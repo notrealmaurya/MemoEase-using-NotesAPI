@@ -8,11 +8,10 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
-import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
-import com.maurya.memoease.AuthenticationViewmodel
+import com.maurya.memoease.models.AuthenticationViewmodel
 import com.maurya.memoease.R
 import com.maurya.memoease.SharedPreferenceHelper
 import com.maurya.memoease.databinding.FragmentSignInBinding

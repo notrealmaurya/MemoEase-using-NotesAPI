@@ -1,5 +1,6 @@
 package com.maurya.memoease.utils
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
@@ -74,6 +75,7 @@ fun isSameDay(cal1: Calendar, cal2: Calendar): Boolean {
 }
 
 
+@SuppressLint("ObsoleteSdkInt")
 fun checkInternet(context: Context): Boolean {
     val connectivityManager =
         context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
