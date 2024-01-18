@@ -9,20 +9,18 @@
     android:orientation="vertical"
     tools:context=".fragments.SignUpFragment">
 
-
     <LinearLayout
         android:id="@+id/topLayout"
         style="@style/StatusBarLayoutStyle"
         android:layout_width="match_parent"
         android:layout_height="125dp"
-        android:gravity="center_vertical"
+        android:gravity="center"
         android:orientation="vertical">
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="10dp"
-            android:padding="15dp"
+            android:fontFamily="@font/font_statusbar"
             android:text="MemoEase"
             android:textSize="40sp" />
 

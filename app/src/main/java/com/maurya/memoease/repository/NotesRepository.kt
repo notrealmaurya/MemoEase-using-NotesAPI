@@ -5,15 +5,14 @@ import androidx.lifecycle.MutableLiveData
 import com.maurya.memoease.api.NotesAPI
 import com.maurya.memoease.models.NoteRequest
 import com.maurya.memoease.models.NoteResponse
-import com.maurya.memoease.roomDatabase.noteDao
 import com.maurya.memoease.utils.NetworkResult
 import org.json.JSONObject
 import retrofit2.Response
 import javax.inject.Inject
 
 class NotesRepository @Inject constructor(
-    private var notesAPI: NotesAPI,
-    private val noteDao: noteDao
+    private var notesAPI: NotesAPI
+//    ,    private val noteDao: noteDao
 ) {
 
     private val _notesLiveData = MutableLiveData<NetworkResult<List<NoteResponse>>>()
@@ -29,7 +28,7 @@ class NotesRepository @Inject constructor(
             val response = notesAPI.getNotes()
             if (response.isSuccessful) {
                 val notes = response.body() ?: emptyList()
-                noteDao.insertOrUpdate(notes)
+//                noteDao.insertOrUpdate(notes)
                 _notesLiveData.postValue(NetworkResult.Success(response.body()!!))
             } else {
                 val errorObject = JSONObject(response.errorBody()?.charStream()?.readText() ?: "")
@@ -41,14 +40,14 @@ class NotesRepository @Inject constructor(
     }
 
     suspend fun saveNotesToLocalDatabase(notes: List<NoteResponse>): List<NoteResponse> {
-        noteDao.insertOrUpdate(notes)
+//        noteDao.insertOrUpdate(notes)
 
         return notes
     }
 
-    suspend fun getLocalNotes(): List<NoteResponse> {
-        return noteDao.getAllNotes()
-    }
+//    suspend fun getLocalNotes(): List<NoteResponse> {
+//        return noteDao.getAllNotes()
+//    }
 
     suspend fun createNotes(noteRequest: NoteRequest) {
         _statusLiveData.postValue(NetworkResult.Loading())

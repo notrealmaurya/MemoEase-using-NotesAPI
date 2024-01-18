@@ -23,7 +23,7 @@ class NoteViewModel @Inject constructor(private val notesRepository: NotesReposi
             try {
                 notesRepository.getNotes()
             } catch (e: Exception) {
-                val localNotes = notesRepository.getLocalNotes()
+//                val localNotes = notesRepository.getLocalNotes()
             }
         }
     }

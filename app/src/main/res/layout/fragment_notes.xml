@@ -9,11 +9,13 @@
 
     <LinearLayout
         android:id="@+id/topLayout"
+        style="@style/TaskItemStyle"
         android:layout_width="match_parent"
-        android:layout_height="60dp"
-        android:layout_marginTop="15dp"
+        android:layout_height="wrap_content"
         android:gravity="center"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        android:paddingTop="15dp"
+        android:paddingBottom="15dp">
 
         <ImageView
             android:id="@+id/backNoteFragment"
@@ -67,15 +69,15 @@
         android:layout_height="match_parent"
         android:layout_above="@id/pop_sheet"
         android:layout_below="@id/topLayout"
-        android:layout_marginTop="20dp"
         android:scrollbars="vertical">
 
         <LinearLayout
             android:id="@+id/middleLayout"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:layout_marginStart="20dp"
             android:orientation="vertical"
+            android:layout_marginTop="20dp"
             android:paddingBottom="80dp">
 
             <EditText
@@ -83,6 +85,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@android:color/transparent"
+                android:fontFamily="@font/font_title"
                 android:hint="Title"
                 android:imeOptions="actionNext"
                 android:importantForAutofill="no"
@@ -96,6 +99,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:ellipsize="marquee"
+                android:fontFamily="@font/font_date"
                 android:marqueeRepeatLimit="marquee_forever"
                 android:padding="8dp"
                 android:scrollHorizontally="true"
@@ -103,7 +107,6 @@
                 android:text=""
                 android:textColor="@color/ImageViewAndTextViewColour"
                 android:textSize="15sp" />
-
 
             <EditText
                 android:id="@+id/notesDescEditTextNotesItem"

@@ -6,15 +6,15 @@ import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import com.maurya.memoease.models.NoteResponse
 
-
-@Dao
-interface noteDao {
-
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertOrUpdate(note: List<NoteResponse>)
-
-    @Query("SELECT * FROM noteRecords")
-    suspend fun getAllNotes(): List<NoteResponse>
-
-
-}
+//
+//@Dao
+//interface noteDao {
+//
+//    @Insert(onConflict = OnConflictStrategy.REPLACE)
+//    suspend fun insertOrUpdate(note: List<NoteResponse>)
+//
+//    @Query("SELECT * FROM noteRecords")
+//    suspend fun getAllNotes(): List<NoteResponse>
+//
+//
+//}
