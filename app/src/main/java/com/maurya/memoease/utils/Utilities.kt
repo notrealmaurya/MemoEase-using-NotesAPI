@@ -10,6 +10,7 @@ import android.net.Uri
 import android.os.Build
 import android.os.Environment
 import android.widget.Toast
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import java.io.File
 import java.io.FileOutputStream
 import java.io.IOException
@@ -38,43 +39,6 @@ fun saveBitmapAsImage(bitmap: Bitmap, context: Context) {
     context.sendBroadcast(mediaScanIntent)
 }
 
-
-fun formatDate(selectedDateMillis: Long): String {
-    val currentDate = Calendar.getInstance()
-    val selectedDate = Calendar.getInstance().apply {
-        timeInMillis = selectedDateMillis
-    }
-
-    return when {
-        isSameDay(selectedDate, currentDate) -> "Today"
-        isSameDay(
-            selectedDate,
-            (currentDate.clone() as Calendar).apply { add(Calendar.DAY_OF_MONTH, 1) }) -> "Tomorrow"
-
-        isSameDay(
-            selectedDate,
-            (currentDate.clone() as Calendar).apply {
-                add(
-                    Calendar.DAY_OF_MONTH,
-                    -1
-                )
-            }) -> "Yesterday"
-
-        else -> {
-            val simpleDateFormat = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
-            simpleDateFormat.format(selectedDate.time)
-        }
-    }
-}
-
-
-fun isSameDay(cal1: Calendar, cal2: Calendar): Boolean {
-    return cal1.get(Calendar.YEAR) == cal2.get(Calendar.YEAR) &&
-            cal1.get(Calendar.MONTH) == cal2.get(Calendar.MONTH) &&
-            cal1.get(Calendar.DAY_OF_MONTH) == cal2.get(Calendar.DAY_OF_MONTH)
-}
-
-
 @SuppressLint("ObsoleteSdkInt")
 fun checkInternet(context: Context): Boolean {
     val connectivityManager =
@@ -100,3 +64,30 @@ fun checkInternet(context: Context): Boolean {
     }
 }
 
+fun formatDate(rawDate: String): String {
+    // Parse the raw date using SimpleDateFormat
+    val parser = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.getDefault())
+    val formatter = SimpleDateFormat("MMM dd, yyyy hh:mm a", Locale.getDefault())
+
+    try {
+        val date = parser.parse(rawDate)
+        return formatter.format(date)
+    } catch (e: Exception) {
+        e.printStackTrace()
+        return rawDate // Return the raw date in case of parsing error
+    }
+}
+
+fun showConfirmationDialog(
+    context: Context,
+    title: String,
+    message: String,
+    positiveButtonAction: () -> Unit
+) {
+    val alertDialogBuilder = MaterialAlertDialogBuilder(context)
+    alertDialogBuilder.setTitle(title)
+    alertDialogBuilder.setMessage(message)
+    alertDialogBuilder.setPositiveButton("Yes") { _, _ -> positiveButtonAction() }
+    alertDialogBuilder.setNegativeButton("Cancel") { dialog, _ -> dialog.dismiss() }
+    alertDialogBuilder.create().show()
+}

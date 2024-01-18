@@ -26,6 +26,7 @@ import com.maurya.memoease.models.NoteViewModel
 import com.maurya.memoease.R
 import com.maurya.memoease.SharedPreferenceHelper
 import com.maurya.memoease.databinding.FragmentHomeBinding
+import com.maurya.memoease.databinding.FragmentNotesBinding
 import com.maurya.memoease.models.NoteResponse
 import com.maurya.memoease.utils.Constants
 import com.maurya.memoease.utils.NetworkResult
@@ -41,12 +42,13 @@ class HomeFragment : Fragment() {
     private lateinit var navController: NavController
     private val noteViewModel by viewModels<NoteViewModel>()
 
-
-    private lateinit var adapterNotes: AdapterNotes
-//    private lateinit var adapterNotesDelete: AdapterNotes
-//    private lateinit var homeList: MutableList<NoteResponse>
+    //    private lateinit var adapterNotesDelete: AdapterNotes
+    private lateinit var homeList: MutableList<NoteResponse>
 //    private lateinit var deletedList: MutableList<NoteResponse>
 
+    companion object {
+        lateinit var adapterNotes: AdapterNotes
+    }
 
     @Inject
     lateinit var sharedPreferenceHelper: SharedPreferenceHelper
@@ -60,7 +62,7 @@ class HomeFragment : Fragment() {
 
         fragmentHomeBinding.recyclerViewHomeFragment.isNestedScrollingEnabled = false
 
-//        homeList = mutableListOf()
+        homeList = mutableListOf()
 //        deletedList = mutableListOf()
 
 
@@ -109,21 +111,21 @@ class HomeFragment : Fragment() {
 
         noteViewModel.getNotes()
         navController = Navigation.findNavController(view)
-        adapterNotes = AdapterNotes(::onNoteClicked)
-
 
         fragmentHomeBinding.recyclerViewHomeFragment.setHasFixedSize(true)
         fragmentHomeBinding.recyclerViewHomeFragment.setItemViewCacheSize(13)
         fragmentHomeBinding.recyclerViewHomeFragment.layoutManager =
             LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
-
+        adapterNotes = AdapterNotes(homeList, ::onNoteClicked)
         fragmentHomeBinding.recyclerViewHomeFragment.adapter = adapterNotes
 
         noteViewModel.notesLiveData.observe(viewLifecycleOwner, Observer {
             fragmentHomeBinding.progressBarHomeFragment.visibility = View.GONE
             when (it) {
                 is NetworkResult.Success -> {
-                    adapterNotes.submitList(it.data)
+                    homeList.clear()
+                    homeList.addAll(it.data!!)
+                    adapterNotes.notifyDataSetChanged()
                 }
 
                 is NetworkResult.Error -> {

@@ -6,7 +6,6 @@ import androidx.room.PrimaryKey
 
 @Entity(tableName = "noteRecords")
 data class NoteResponse(
-
     val __v: Int,
     val _id: String,
     val createdAt: String,

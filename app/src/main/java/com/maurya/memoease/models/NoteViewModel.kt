@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.maurya.memoease.models.NoteRequest
 import com.maurya.memoease.repository.NotesRepository
+import com.maurya.memoease.utils.NetworkResult
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -45,6 +46,9 @@ class NoteViewModel @Inject constructor(private val notesRepository: NotesReposi
             notesRepository.deleteNotes(noteId)
         }
     }
+
+
+
 
 
 }

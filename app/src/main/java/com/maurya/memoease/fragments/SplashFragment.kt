@@ -47,7 +47,7 @@ class SplashFragment : Fragment() {
                 } else {
                     navController.navigate(R.id.action_splashFragment_to_signInFragment)
                 }
-            }, 2000
+            }, 3000
         )
     }
 }

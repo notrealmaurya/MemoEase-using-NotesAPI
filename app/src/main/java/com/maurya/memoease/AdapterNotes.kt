@@ -9,13 +9,14 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.maurya.memoease.databinding.NotesItemBinding
 import com.maurya.memoease.models.NoteResponse
+import com.maurya.memoease.utils.formatDate
 import java.text.SimpleDateFormat
 import java.util.Locale
 import kotlin.reflect.KFunction1
-
 class AdapterNotes(
+    private val notesList: List<NoteResponse>,
     private val onNoteClicked: (NoteResponse) -> Unit
-) : ListAdapter<NoteResponse, AdapterNotes.MemoEaseFileHolder>(ComparatorDiffUtil()) {
+) : RecyclerView.Adapter<AdapterNotes.MemoEaseFileHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MemoEaseFileHolder {
         val binding = NotesItemBinding.inflate(LayoutInflater.from(parent.context), parent, false)
@@ -23,10 +24,12 @@ class AdapterNotes(
     }
 
     override fun onBindViewHolder(holder: MemoEaseFileHolder, position: Int) {
-        val currentItem = getItem(position)
-        currentItem?.let {
-            holder.bind(it)
-        }
+        val currentItem = notesList[position]
+        holder.bind(currentItem)
+    }
+
+    override fun getItemCount(): Int {
+        return notesList.size
     }
 
     inner class MemoEaseFileHolder(private val binding: NotesItemBinding) :
@@ -42,30 +45,4 @@ class AdapterNotes(
             }
         }
     }
-
-    class ComparatorDiffUtil : DiffUtil.ItemCallback<NoteResponse>() {
-        override fun areItemsTheSame(oldItem: NoteResponse, newItem: NoteResponse): Boolean {
-            return oldItem._id == newItem._id
-        }
-
-        override fun areContentsTheSame(oldItem: NoteResponse, newItem: NoteResponse): Boolean {
-            return oldItem == newItem
-        }
-    }
-
-    private fun formatDate(rawDate: String): String {
-        // Parse the raw date using SimpleDateFormat
-        val parser = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.getDefault())
-        val formatter = SimpleDateFormat("MMM dd, yyyy hh:mm a", Locale.getDefault())
-
-
-        try {
-            val date = parser.parse(rawDate)
-            return formatter.format(date)
-        } catch (e: Exception) {
-            e.printStackTrace()
-            return rawDate // Return the raw date in case of parsing error
-        }
-    }
 }
-

@@ -1,5 +1,6 @@
 package com.maurya.memoease.fragments
 
+import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.Canvas
@@ -12,6 +13,7 @@ import android.widget.Toast
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.gson.Gson
 import com.maurya.memoease.models.NoteViewModel
 import com.maurya.memoease.databinding.FragmentNotesBinding
@@ -19,6 +21,7 @@ import com.maurya.memoease.models.NoteRequest
 import com.maurya.memoease.models.NoteResponse
 import com.maurya.memoease.utils.NetworkResult
 import com.maurya.memoease.utils.saveBitmapAsImage
+import com.maurya.memoease.utils.showConfirmationDialog
 import dagger.hilt.android.AndroidEntryPoint
 import java.text.SimpleDateFormat
 import java.util.Locale
@@ -27,18 +30,19 @@ import java.util.Locale
 @AndroidEntryPoint
 class NotesFragment : Fragment() {
 
-    private lateinit var fragmentNotesBinding: FragmentNotesBinding
     private var note: NoteResponse? = null
     private val noteViewModel by viewModels<NoteViewModel>()
+    private lateinit var fragmentNotesBinding: FragmentNotesBinding
+
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
 
         fragmentNotesBinding = FragmentNotesBinding.inflate(inflater, container, false)
-        val view = fragmentNotesBinding.root
 
-        return view
+        return fragmentNotesBinding.root
 
 
     }
@@ -78,6 +82,7 @@ class NotesFragment : Fragment() {
                 fragmentNotesBinding.notesDescEditTextNotesItem.setText(it.description)
             }
         } else {
+            fragmentNotesBinding.popSheet.visibility = View.GONE
 
         }
 
@@ -87,42 +92,55 @@ class NotesFragment : Fragment() {
     }
 
     private fun listeners() {
+
         fragmentNotesBinding.deleteNoteFragment.setOnClickListener {
-            note?.let {
-                noteViewModel.deleteNote(it._id)
-                findNavController().navigateUp()
+            showConfirmationDialog(
+                requireContext(),
+                "Delete",
+                "Are you sure you want to delete this note?"
+            ) {
+                note?.let {
+                    noteViewModel.deleteNote(it._id)
+                    findNavController().navigateUp()
+                    Toast.makeText(requireContext(), "Deleted!", Toast.LENGTH_SHORT).show()
+                }
             }
         }
+
+        fragmentNotesBinding.saveImageNoteFragment.setOnClickListener {
+            showConfirmationDialog(
+                requireContext(),
+                "Save as Image",
+                "Are you sure you want to save this note as an image?"
+            ) {
+                val scrollView = fragmentNotesBinding.scrollView
+                val heightMeasureSpec =
+                    View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED)
+                scrollView.measure(0, heightMeasureSpec)
+                val totalHeight = scrollView.measuredHeight
+                val bitmap =
+                    Bitmap.createBitmap(scrollView.width, totalHeight, Bitmap.Config.ARGB_8888)
+                val canvas = Canvas(bitmap)
+                scrollView.draw(canvas)
+                saveBitmapAsImage(bitmap, requireContext())
+                Toast.makeText(requireContext(), "Note saved as image!", Toast.LENGTH_SHORT).show()
+            }
+        }
+
 
         fragmentNotesBinding.submitNoteFragment.setOnClickListener {
             val title = fragmentNotesBinding.notesTitleEditTextNotesItem.text.toString()
             val desc = fragmentNotesBinding.notesDescEditTextNotesItem.text.toString()
             val noteRequest = NoteRequest(desc, title)
             if (note == null) {
-                fragmentNotesBinding.popSheet.visibility=View.GONE
                 noteViewModel.createNote(noteRequest)
             } else {
                 noteViewModel.updateNote(note!!._id, noteRequest)
             }
         }
 
-
         fragmentNotesBinding.backNoteFragment.setOnClickListener {
             findNavController().navigateUp()
-        }
-
-        fragmentNotesBinding.saveImageNoteFragment.setOnClickListener {
-            val scrollView = fragmentNotesBinding.scrollView
-            val heightMeasureSpec =
-                View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED)
-            scrollView.measure(0, heightMeasureSpec)
-            val totalHeight = scrollView.measuredHeight
-            val bitmap = Bitmap.createBitmap(scrollView.width, totalHeight, Bitmap.Config.ARGB_8888)
-            val canvas = Canvas(bitmap)
-            scrollView.draw(canvas)
-            saveBitmapAsImage(bitmap, requireContext())
-
-            Toast.makeText(requireContext(), "Note saved as image!", Toast.LENGTH_SHORT).show()
         }
 
         fragmentNotesBinding.shareNoteFragment.setOnClickListener {
@@ -140,6 +158,9 @@ class NotesFragment : Fragment() {
 
 
     }
+
+
+
 
 
 }
