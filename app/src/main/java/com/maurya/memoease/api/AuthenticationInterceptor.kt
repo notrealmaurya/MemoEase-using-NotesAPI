@@ -1,6 +1,6 @@
 package com.maurya.memoease.api
 
-import com.maurya.memoease.SharedPreferenceHelper
+import com.maurya.memoease.utils.HelperSharedPreference
 import okhttp3.Interceptor
 import okhttp3.Response
 import javax.inject.Inject
@@ -8,7 +8,7 @@ import javax.inject.Inject
 class AuthenticationInterceptor @Inject constructor() : Interceptor{
 
     @Inject
-    lateinit var sharedPreferenceHelper: SharedPreferenceHelper
+    lateinit var sharedPreferenceHelper: HelperSharedPreference
     override fun intercept(chain: Interceptor.Chain): Response {
         val originalRequest = chain.request()
 

@@ -1,4 +1,4 @@
-package com.maurya.memoease
+package com.maurya.memoease.utils
 
 import android.content.Context
 import android.content.SharedPreferences
@@ -7,7 +7,7 @@ import com.maurya.memoease.utils.Constants.sharedPref
 import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject
 
-class SharedPreferenceHelper @Inject constructor(@ApplicationContext context: Context) {
+class HelperSharedPreference @Inject constructor(@ApplicationContext context: Context) {
 
     private var prefs: SharedPreferences =
         context.getSharedPreferences(sharedPref, Context.MODE_PRIVATE)

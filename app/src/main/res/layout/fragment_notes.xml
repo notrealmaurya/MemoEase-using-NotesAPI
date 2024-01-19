@@ -28,33 +28,20 @@
 
         <TextView
             android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1" />
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_weight="1"
+            android:fontFamily="@font/font_statusbar"
+            android:gravity="center"
+            android:text="MemoEase"
+            android:layout_marginTop="2dp"
+            android:textSize="30sp" />
 
-        <ImageView
-            android:id="@+id/undoNoteFragment"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:background="@drawable/bg_ripplefactor"
-            android:clickable="true"
-            android:padding="7dp"
-            android:src="@drawable/icon_undo" />
-
-        <ImageView
-            android:id="@+id/redoNoteFragment"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:layout_marginStart="5dp"
-            android:background="@drawable/bg_ripplefactor"
-            android:clickable="true"
-            android:padding="7dp"
-            android:src="@drawable/icon_redo" />
 
         <ImageView
             android:id="@+id/submitNoteFragment"
             android:layout_width="40dp"
             android:layout_height="40dp"
-            android:layout_marginStart="5dp"
             android:layout_marginEnd="15dp"
             android:background="@drawable/bg_ripplefactor"
             android:padding="7dp"
@@ -76,8 +63,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="20dp"
-            android:orientation="vertical"
             android:layout_marginTop="20dp"
+            android:orientation="vertical"
             android:paddingBottom="80dp">
 
             <EditText

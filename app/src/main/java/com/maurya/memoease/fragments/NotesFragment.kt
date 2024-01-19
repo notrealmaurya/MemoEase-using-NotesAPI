@@ -1,24 +1,23 @@
 package com.maurya.memoease.fragments
 
-import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
-import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.google.android.material.snackbar.Snackbar
 import com.google.gson.Gson
-import com.maurya.memoease.models.NoteViewModel
 import com.maurya.memoease.databinding.FragmentNotesBinding
 import com.maurya.memoease.models.NoteRequest
 import com.maurya.memoease.models.NoteResponse
+import com.maurya.memoease.models.NoteViewModel
 import com.maurya.memoease.utils.NetworkResult
 import com.maurya.memoease.utils.saveBitmapAsImage
 import com.maurya.memoease.utils.showConfirmationDialog
@@ -34,6 +33,8 @@ class NotesFragment : Fragment() {
     private val noteViewModel by viewModels<NoteViewModel>()
     private lateinit var fragmentNotesBinding: FragmentNotesBinding
 
+    private val textChangesList = mutableListOf<String>()
+    private var currentStateIndex = -1
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -77,8 +78,14 @@ class NotesFragment : Fragment() {
                     "EEEE, dd MMMM yyyy",
                     Locale.getDefault()
                 ).format(createdAtDate)
-                fragmentNotesBinding.notesDetailTxtNotesItem.text =
-                    "$formattedDate | ${it.description.length} characters"
+                val character = it.description.length
+                if (character <= 1) {
+                    fragmentNotesBinding.notesDetailTxtNotesItem.text =
+                        "$formattedDate | ${character} character"
+                } else {
+                    fragmentNotesBinding.notesDetailTxtNotesItem.text =
+                        "$formattedDate | ${character} characters"
+                }
                 fragmentNotesBinding.notesDescEditTextNotesItem.setText(it.description)
             }
         } else {
@@ -93,6 +100,29 @@ class NotesFragment : Fragment() {
 
     private fun listeners() {
 
+
+        fragmentNotesBinding.reminderNoteFragment.setOnClickListener {
+            Snackbar.make(
+                fragmentNotesBinding.root,
+                "Feature coming soon \uD83D\uDC7B", 1000
+            ).show()
+        }
+
+        fragmentNotesBinding.themeNoteFragment.setOnClickListener {
+            Snackbar.make(
+                fragmentNotesBinding.root,
+                "Feature coming soon \uD83D\uDC7B", 1000
+            ).show()
+        }
+
+        fragmentNotesBinding.lockNoteFragment.setOnClickListener {
+            Snackbar.make(
+                fragmentNotesBinding.root,
+                "Feature coming soon \uD83D\uDC7B", 1000
+            ).show()
+        }
+
+
         fragmentNotesBinding.deleteNoteFragment.setOnClickListener {
             showConfirmationDialog(
                 requireContext(),
@@ -102,10 +132,12 @@ class NotesFragment : Fragment() {
                 note?.let {
                     noteViewModel.deleteNote(it._id)
                     findNavController().navigateUp()
+                    HomeFragment.adapterNotes.notifyDataSetChanged()
                     Toast.makeText(requireContext(), "Deleted!", Toast.LENGTH_SHORT).show()
                 }
             }
         }
+
 
         fragmentNotesBinding.saveImageNoteFragment.setOnClickListener {
             showConfirmationDialog(
@@ -158,9 +190,6 @@ class NotesFragment : Fragment() {
 
 
     }
-
-
-
 
 
 }

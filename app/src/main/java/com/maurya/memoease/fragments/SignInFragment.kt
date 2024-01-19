@@ -13,7 +13,7 @@ import androidx.navigation.NavController
 import androidx.navigation.Navigation
 import com.maurya.memoease.models.AuthenticationViewmodel
 import com.maurya.memoease.R
-import com.maurya.memoease.SharedPreferenceHelper
+import com.maurya.memoease.utils.HelperSharedPreference
 import com.maurya.memoease.databinding.FragmentSignInBinding
 import com.maurya.memoease.models.UserRequest
 import com.maurya.memoease.utils.NetworkResult
@@ -30,7 +30,7 @@ class SignInFragment : Fragment() {
     private val authViewModel by activityViewModels<AuthenticationViewmodel>()
 
     @Inject
-    lateinit var sharedPreferenceHelper: SharedPreferenceHelper
+    lateinit var sharedPreferenceHelper: HelperSharedPreference
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?

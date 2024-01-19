@@ -1,36 +1,28 @@
 package com.maurya.memoease.fragments
 
-import android.app.AlertDialog
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
 import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
-import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
-import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.StaggeredGridLayoutManager
-import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
 import com.google.gson.Gson
 import com.maurya.memoease.AdapterNotes
 import com.maurya.memoease.models.NoteViewModel
 import com.maurya.memoease.R
-import com.maurya.memoease.SharedPreferenceHelper
+import com.maurya.memoease.utils.HelperSharedPreference
 import com.maurya.memoease.databinding.FragmentHomeBinding
-import com.maurya.memoease.databinding.FragmentNotesBinding
 import com.maurya.memoease.models.NoteResponse
-import com.maurya.memoease.utils.Constants
 import com.maurya.memoease.utils.NetworkResult
 import com.maurya.memoease.utils.checkInternet
+import com.maurya.memoease.utils.showConfirmationDialog
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
@@ -43,15 +35,16 @@ class HomeFragment : Fragment() {
     private val noteViewModel by viewModels<NoteViewModel>()
 
     //    private lateinit var adapterNotesDelete: AdapterNotes
-    private lateinit var homeList: MutableList<NoteResponse>
+
 //    private lateinit var deletedList: MutableList<NoteResponse>
 
     companion object {
         lateinit var adapterNotes: AdapterNotes
+        lateinit var homeList: MutableList<NoteResponse>
     }
 
     @Inject
-    lateinit var sharedPreferenceHelper: SharedPreferenceHelper
+    lateinit var sharedPreferenceHelper: HelperSharedPreference
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -65,7 +58,6 @@ class HomeFragment : Fragment() {
         homeList = mutableListOf()
 //        deletedList = mutableListOf()
 
-
         listeners()
 
         return view
@@ -75,21 +67,16 @@ class HomeFragment : Fragment() {
     private fun listeners() {
 
         fragmentHomeBinding.logOutUser.setOnClickListener {
-            val alertDialogBuilder = MaterialAlertDialogBuilder(requireContext())
-            alertDialogBuilder.setTitle("Logout")
-            alertDialogBuilder.setMessage("Are you sure you want to logout?")
-            alertDialogBuilder.setPositiveButton("Logout") { _, _ ->
+            showConfirmationDialog(
+                requireContext(),
+                "Logout",
+                "Are you sure you want to logout?"
+            ) {
                 sharedPreferenceHelper.clearToken()
                 Log.d("NavigationMemo", "Before navigating to signInFragment")
                 navController.navigate(R.id.action_homeFragment_to_signInFragment)
                 Log.d("NavigationMemo", "After navigating to signInFragment")
-
             }
-            alertDialogBuilder.setNegativeButton("Cancel") { dialog, _ ->
-                dialog.dismiss()
-            }
-            val alertDialog = alertDialogBuilder.create()
-            alertDialog.show()
         }
 
         fragmentHomeBinding.addNoteHomeFragment.setOnClickListener {
@@ -97,7 +84,6 @@ class HomeFragment : Fragment() {
         }
 
     }
-
 
     private fun onNoteClicked(noteResponse: NoteResponse) {
         val bundle = Bundle()
@@ -141,7 +127,6 @@ class HomeFragment : Fragment() {
             }
 
         })
-
 
     }
 
