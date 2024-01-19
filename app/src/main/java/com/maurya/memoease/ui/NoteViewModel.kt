@@ -1,4 +1,4 @@
-package com.maurya.memoease.models
+package com.maurya.memoease.ui
 
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -14,8 +14,8 @@ import javax.inject.Inject
 class NoteViewModel @Inject constructor(private val notesRepository: NotesRepository) :
     ViewModel() {
 
-    val notesLiveData get() = notesRepository.notesLiveData
-    val statusLiveData get() = notesRepository.statusLiveData
+    val notesStateFLow get() = notesRepository.notesStateFlow
+    val statusStateFlow get() = notesRepository.statusStateFlow
 
 
     fun getNotes() {

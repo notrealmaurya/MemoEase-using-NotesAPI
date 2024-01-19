@@ -10,18 +10,21 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.Observer
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import com.google.android.material.snackbar.Snackbar
 import com.google.gson.Gson
 import com.maurya.memoease.databinding.FragmentNotesBinding
 import com.maurya.memoease.models.NoteRequest
 import com.maurya.memoease.models.NoteResponse
-import com.maurya.memoease.models.NoteViewModel
 import com.maurya.memoease.utils.NetworkResult
 import com.maurya.memoease.utils.saveBitmapAsImage
 import com.maurya.memoease.utils.showConfirmationDialog
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.Locale
 
@@ -51,19 +54,23 @@ class NotesFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        noteViewModel.statusLiveData.observe(viewLifecycleOwner, Observer {
-            when (it) {
-                is NetworkResult.Success -> {
-                    findNavController().popBackStack()
-                }
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                noteViewModel.statusStateFlow.collect {
+                    when (it) {
+                        is NetworkResult.Success -> {
+                            findNavController().popBackStack()
+                        }
 
-                is NetworkResult.Error -> {}
+                        is NetworkResult.Error -> {}
 
-                is NetworkResult.Loading -> {
+                        is NetworkResult.Loading -> {
 
+                        }
+                    }
                 }
             }
-        })
+        }
 
 
         val jsonNotes = arguments?.getString("note")

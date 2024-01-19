@@ -6,6 +6,8 @@ import com.maurya.memoease.api.NotesAPI
 import com.maurya.memoease.models.NoteRequest
 import com.maurya.memoease.models.NoteResponse
 import com.maurya.memoease.utils.NetworkResult
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import org.json.JSONObject
 import retrofit2.Response
 import javax.inject.Inject
@@ -15,27 +17,28 @@ class NotesRepository @Inject constructor(
 //    ,    private val noteDao: noteDao
 ) {
 
-    private val _notesLiveData = MutableLiveData<NetworkResult<List<NoteResponse>>>()
+    private val _notesStateFlow =
+        MutableStateFlow<NetworkResult<List<NoteResponse>>>(NetworkResult.Loading())
 
-    val notesLiveData: LiveData<NetworkResult<List<NoteResponse>>> get() = _notesLiveData
+    val notesStateFlow: StateFlow<NetworkResult<List<NoteResponse>>> get() = _notesStateFlow
 
 
-    private val _statusLiveData = MutableLiveData<NetworkResult<String>>()
-    val statusLiveData: LiveData<NetworkResult<String>> get() = _statusLiveData
+    private val _statusStateFlow = MutableStateFlow<NetworkResult<String>>(NetworkResult.Loading())
+    val statusStateFlow: StateFlow<NetworkResult<String>> get() = _statusStateFlow
     suspend fun getNotes() {
-        _notesLiveData.postValue(NetworkResult.Loading())
+        _notesStateFlow.emit(NetworkResult.Loading())
         try {
             val response = notesAPI.getNotes()
             if (response.isSuccessful) {
                 val notes = response.body() ?: emptyList()
 //                noteDao.insertOrUpdate(notes)
-                _notesLiveData.postValue(NetworkResult.Success(response.body()!!))
+                _notesStateFlow.emit(NetworkResult.Success(response.body()!!))
             } else {
                 val errorObject = JSONObject(response.errorBody()?.charStream()?.readText() ?: "")
-                _notesLiveData.postValue(NetworkResult.Error(errorObject.getString("message")))
+                _notesStateFlow.emit(NetworkResult.Error(errorObject.getString("message")))
             }
         } catch (e: Exception) {
-            _notesLiveData.postValue(NetworkResult.Error("No Notes is available"))
+            _notesStateFlow.emit(NetworkResult.Error("No Notes is available"))
         }
     }
 
@@ -50,43 +53,43 @@ class NotesRepository @Inject constructor(
 //    }
 
     suspend fun createNotes(noteRequest: NoteRequest) {
-        _statusLiveData.postValue(NetworkResult.Loading())
+        _statusStateFlow.emit(NetworkResult.Loading())
         try {
             val response = notesAPI.createNote(noteRequest)
             handleResponse(response, "Notes Created")
         } catch (e: Exception) {
-            _notesLiveData.postValue(NetworkResult.Error("Something went wrong"))
+            _notesStateFlow.emit(NetworkResult.Error("Something went wrong"))
         }
     }
 
     suspend fun updateNotes(noteId: String, noteRequest: NoteRequest) {
-        _statusLiveData.postValue(NetworkResult.Loading())
+        _statusStateFlow.emit(NetworkResult.Loading())
         try {
             val response = notesAPI.updateNote(noteId, noteRequest)
             handleResponse(response, "Note Updated")
         } catch (e: Exception) {
-            _notesLiveData.postValue(NetworkResult.Error("Something went wrong"))
+            _notesStateFlow.emit(NetworkResult.Error("Something went wrong"))
         }
 
     }
 
     suspend fun deleteNotes(noteId: String) {
-        _statusLiveData.postValue(NetworkResult.Loading())
+        _statusStateFlow.emit(NetworkResult.Loading())
         try {
             val response = notesAPI.deleteNote(noteId)
             handleResponse(response, "Note Deleted")
         } catch (e: Exception) {
-            _notesLiveData.postValue(NetworkResult.Error("Something went wrong"))
+            _notesStateFlow.emit(NetworkResult.Error("Something went wrong"))
         }
 
     }
 
 
-    private fun handleResponse(response: Response<NoteResponse>, message: String) {
+    private suspend fun handleResponse(response: Response<NoteResponse>, message: String) {
         if (response.isSuccessful && response.body() != null) {
-            _statusLiveData.postValue(NetworkResult.Success(message))
+            _statusStateFlow.emit(NetworkResult.Success(message))
         } else {
-            _notesLiveData.postValue(NetworkResult.Error("Something went wrong"))
+            _notesStateFlow.emit(NetworkResult.Error("Something went wrong"))
         }
     }
 

@@ -8,37 +8,39 @@ import com.maurya.memoease.api.UserAPI
 import com.maurya.memoease.models.UserRequest
 import com.maurya.memoease.models.UserResponse
 import com.maurya.memoease.utils.NetworkResult
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import org.json.JSONObject
 import retrofit2.Response
 import javax.inject.Inject
 
 class UserRepository @Inject constructor(private val userAPI: UserAPI) {
 
-    private val _userResponseLiveData = MutableLiveData<NetworkResult<UserResponse>>()
+    private val _userResponseStateFlow = MutableStateFlow<NetworkResult<UserResponse>>(NetworkResult.Loading())
 
-    val userResponseLiveData: LiveData<NetworkResult<UserResponse>> get() = _userResponseLiveData
+    val userResponseStateFLow: StateFlow<NetworkResult<UserResponse>> get() = _userResponseStateFlow
 
     suspend fun registerUser(userRequest: UserRequest) {
-        _userResponseLiveData.postValue(NetworkResult.Loading())
+        _userResponseStateFlow.emit(NetworkResult.Loading())
         val response = userAPI.signUp(userRequest)
         handleResponse(response)
     }
 
     suspend fun loginUser(userRequest: UserRequest) {
-        _userResponseLiveData.postValue(NetworkResult.Loading())
+        _userResponseStateFlow.emit(NetworkResult.Loading())
         val response = userAPI.signIn(userRequest)
         handleResponse(response)
 
     }
 
-    private fun handleResponse(response: Response<UserResponse>) {
+    private suspend fun handleResponse(response: Response<UserResponse>) {
         if (response.isSuccessful && response.body() != null) {
-            _userResponseLiveData.postValue(NetworkResult.Success(response.body()!!))
+            _userResponseStateFlow.emit(NetworkResult.Success(response.body()!!))
         } else if (response.errorBody() != null) {
             val errorObject = JSONObject(response.errorBody()!!.charStream().readText())
-            _userResponseLiveData.postValue(NetworkResult.Error(errorObject.getString("message")))
+            _userResponseStateFlow.emit(NetworkResult.Error(errorObject.getString("message")))
         } else {
-            _userResponseLiveData.postValue(NetworkResult.Error("Something went wrong"))
+            _userResponseStateFlow.emit(NetworkResult.Error("Something went wrong"))
         }
     }
 

@@ -8,14 +8,16 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.Observer
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.snackbar.Snackbar
 import com.google.gson.Gson
 import com.maurya.memoease.AdapterNotes
-import com.maurya.memoease.models.NoteViewModel
 import com.maurya.memoease.R
 import com.maurya.memoease.utils.HelperSharedPreference
 import com.maurya.memoease.databinding.FragmentHomeBinding
@@ -24,6 +26,7 @@ import com.maurya.memoease.utils.NetworkResult
 import com.maurya.memoease.utils.checkInternet
 import com.maurya.memoease.utils.showConfirmationDialog
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -105,28 +108,35 @@ class HomeFragment : Fragment() {
         adapterNotes = AdapterNotes(homeList, ::onNoteClicked)
         fragmentHomeBinding.recyclerViewHomeFragment.adapter = adapterNotes
 
-        noteViewModel.notesLiveData.observe(viewLifecycleOwner, Observer {
-            fragmentHomeBinding.progressBarHomeFragment.visibility = View.GONE
-            when (it) {
-                is NetworkResult.Success -> {
-                    homeList.clear()
-                    homeList.addAll(it.data!!)
-                    adapterNotes.notifyDataSetChanged()
-                }
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                noteViewModel.notesStateFLow.collect {
+                    fragmentHomeBinding.progressBarHomeFragment.visibility = View.GONE
+                    when (it) {
+                        is NetworkResult.Success -> {
+                            homeList.clear()
+                            homeList.addAll(it.data!!)
+                            adapterNotes.notifyDataSetChanged()
+                        }
 
-                is NetworkResult.Error -> {
-                    Toast.makeText(requireContext(), it.message.toString(), Toast.LENGTH_SHORT)
-                        .show()
-                }
+                        is NetworkResult.Error -> {
+                            Toast.makeText(
+                                requireContext(),
+                                it.message.toString(),
+                                Toast.LENGTH_SHORT
+                            )
+                                .show()
+                        }
 
-                is NetworkResult.Loading -> {
-                    fragmentHomeBinding.progressBarHomeFragment.visibility = View.VISIBLE
-                }
+                        is NetworkResult.Loading -> {
+                            fragmentHomeBinding.progressBarHomeFragment.visibility = View.VISIBLE
+                        }
 
-                else -> {}
+                        else -> {}
+                    }
+                }
             }
-
-        })
+        }
 
     }
 

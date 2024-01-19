@@ -8,16 +8,19 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.Observer
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
-import com.maurya.memoease.models.AuthenticationViewmodel
 import com.maurya.memoease.R
 import com.maurya.memoease.utils.HelperSharedPreference
 import com.maurya.memoease.databinding.FragmentSignUpBinding
 import com.maurya.memoease.models.UserRequest
 import com.maurya.memoease.utils.NetworkResult
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -51,28 +54,31 @@ class SignUpFragment : Fragment() {
 
         listeners()
 
-        authViewModel.userResponseLiveData.observe(viewLifecycleOwner, Observer {
-            loading(false)
-            when (it) {
-                is NetworkResult.Success -> {
-                    sharedPreferenceHelper.saveToken(it.data!!.token)
-                    navController.navigate(R.id.action_signUpFragment_to_homeFragment)
-                }
-
-                is NetworkResult.Error -> {
-                    showToast(it.message.toString())
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                authViewModel.userResponseStateFlow.collect {
                     loading(false)
-                }
+                    when (it) {
+                        is NetworkResult.Success -> {
+                            sharedPreferenceHelper.saveToken(it.data!!.token)
+                            navController.navigate(R.id.action_signUpFragment_to_homeFragment)
+                        }
 
-                is NetworkResult.Loading -> {
-                    loading(true)
-                }
+                        is NetworkResult.Error -> {
+                            showToast(it.message.toString())
+                            loading(false)
+                        }
 
-                else -> {}
+                        is NetworkResult.Loading -> {
+                            loading(true)
+                        }
+
+                        else -> {}
+                    }
+
+                }
             }
-
-        })
-
+        }
 
     }
 
@@ -120,10 +126,14 @@ class SignUpFragment : Fragment() {
 
 
     private fun isValidSignUpDetails(): Boolean {
-        return if (fragmentSignUpBinding.userNameSignUpFragment.text.toString().trim().isEmpty()) {
+        return if (fragmentSignUpBinding.userNameSignUpFragment.text.toString().trim()
+                .isEmpty()
+        ) {
             showToast("Enter Your userName ")
             false
-        } else if (fragmentSignUpBinding.emailSignUpFragment.text.toString().trim().isEmpty()) {
+        } else if (fragmentSignUpBinding.emailSignUpFragment.text.toString().trim()
+                .isEmpty()
+        ) {
             showToast("Enter Your email ")
             false
         } else if (!Patterns.EMAIL_ADDRESS.matcher(
@@ -137,7 +147,8 @@ class SignUpFragment : Fragment() {
         ) {
             showToast("Password length should be greater than 5 ")
             false
-        } else if (fragmentSignUpBinding.passwordConfirmSignUpFragment.text.toString().trim()
+        } else if (fragmentSignUpBinding.passwordConfirmSignUpFragment.text.toString()
+                .trim()
                 .isEmpty()
         ) {
             showToast("Confirm your Password")

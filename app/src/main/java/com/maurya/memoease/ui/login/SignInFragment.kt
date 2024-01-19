@@ -8,16 +8,19 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.Observer
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
-import com.maurya.memoease.models.AuthenticationViewmodel
 import com.maurya.memoease.R
 import com.maurya.memoease.utils.HelperSharedPreference
 import com.maurya.memoease.databinding.FragmentSignInBinding
 import com.maurya.memoease.models.UserRequest
 import com.maurya.memoease.utils.NetworkResult
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -50,28 +53,31 @@ class SignInFragment : Fragment() {
 
 
         listeners()
-
-        authViewModel.userResponseLiveData.observe(viewLifecycleOwner, Observer {
-            loading(false)
-            when (it) {
-                is NetworkResult.Success -> {
-                    sharedPreferenceHelper.saveToken(it.data!!.token)
-                    navController.navigate(R.id.action_signInFragment_to_homeFragment)
-                }
-
-                is NetworkResult.Error -> {
-                    showToast(it.message.toString())
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                authViewModel.userResponseStateFlow.collect {
                     loading(false)
+                    when (it) {
+                        is NetworkResult.Success -> {
+                            sharedPreferenceHelper.saveToken(it.data!!.token)
+                            navController.navigate(R.id.action_signInFragment_to_homeFragment)
+                        }
+
+                        is NetworkResult.Error -> {
+                            showToast(it.message.toString())
+                            loading(false)
+                        }
+
+                        is NetworkResult.Loading -> {
+                            loading(true)
+                        }
+
+                        else -> {}
+                    }
                 }
 
-                is NetworkResult.Loading -> {
-                    loading(true)
-                }
-
-                else -> {}
             }
-
-        })
+        }
 
     }
 
