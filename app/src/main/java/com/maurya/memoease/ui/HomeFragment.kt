@@ -1,4 +1,4 @@
-package com.maurya.memoease.fragments
+package com.maurya.memoease.ui
 
 import android.os.Bundle
 import android.util.Log

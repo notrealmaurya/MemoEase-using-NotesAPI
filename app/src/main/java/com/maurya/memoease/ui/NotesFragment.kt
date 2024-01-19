@@ -1,4 +1,4 @@
-package com.maurya.memoease.fragments
+package com.maurya.memoease.ui
 
 import android.content.Intent
 import android.graphics.Bitmap

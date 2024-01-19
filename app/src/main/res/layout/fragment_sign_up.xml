@@ -7,7 +7,7 @@
     android:layout_height="match_parent"
     android:gravity="center"
     android:orientation="vertical"
-    tools:context=".fragments.SignUpFragment">
+    tools:context=".ui.login.SignUpFragment">
 
     <LinearLayout
         android:id="@+id/topLayout"

@@ -1,4 +1,4 @@
-package com.maurya.memoease.di
+package com.maurya.memoease.module
 
 import com.maurya.memoease.api.AuthenticationInterceptor
 import com.maurya.memoease.api.NotesAPI
@@ -10,10 +10,7 @@ import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
-import retrofit2.Retrofit.Builder
 import retrofit2.converter.gson.GsonConverterFactory
-import retrofit2.create
-import java.util.concurrent.TimeUnit
 import javax.inject.Singleton
 
 @InstallIn(SingletonComponent::class)

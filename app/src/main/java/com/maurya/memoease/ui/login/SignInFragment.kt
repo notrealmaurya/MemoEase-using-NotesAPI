@@ -1,4 +1,4 @@
-package com.maurya.memoease.fragments
+package com.maurya.memoease.ui.login
 
 import android.os.Bundle
 import android.util.Patterns

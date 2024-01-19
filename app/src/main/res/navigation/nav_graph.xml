@@ -7,7 +7,7 @@
 
     <fragment
         android:id="@+id/splashFragment"
-        android:name="com.maurya.memoease.fragments.SplashFragment"
+        android:name="com.maurya.memoease.roomDatabase.SplashFragment"
         android:label="fragment_splash"
         tools:layout="@layout/fragment_splash" >
         <action
@@ -24,7 +24,7 @@
     </fragment>
     <fragment
         android:id="@+id/signInFragment"
-        android:name="com.maurya.memoease.fragments.SignInFragment"
+        android:name="com.maurya.memoease.ui.login.SignInFragment"
         android:label="fragment_sign_in"
         tools:layout="@layout/fragment_sign_in" >
         <action
@@ -40,7 +40,7 @@
     </fragment>
     <fragment
         android:id="@+id/signUpFragment"
-        android:name="com.maurya.memoease.fragments.SignUpFragment"
+        android:name="com.maurya.memoease.ui.login.SignUpFragment"
         android:label="fragment_sign_up"
         tools:layout="@layout/fragment_sign_up" >
         <action
@@ -56,7 +56,7 @@
     </fragment>
     <fragment
         android:id="@+id/homeFragment"
-        android:name="com.maurya.memoease.fragments.HomeFragment"
+        android:name="com.maurya.memoease.ui.HomeFragment"
         android:label="fragment_home"
         tools:layout="@layout/fragment_home" >
         <action
@@ -73,7 +73,7 @@
     </fragment>
     <fragment
         android:id="@+id/notesFragment"
-        android:name="com.maurya.memoease.fragments.NotesFragment"
+        android:name="com.maurya.memoease.ui.NotesFragment"
         android:label="fragment_notes"
         tools:layout="@layout/fragment_notes" />
 </navigation>

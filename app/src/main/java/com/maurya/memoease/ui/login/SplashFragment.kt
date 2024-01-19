@@ -1,4 +1,4 @@
-package com.maurya.memoease.fragments
+package com.maurya.memoease.ui.login
 
 import android.os.Bundle
 import android.os.Handler
@@ -10,8 +10,8 @@ import android.view.ViewGroup
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
 import com.maurya.memoease.R
-import com.maurya.memoease.utils.HelperSharedPreference
 import com.maurya.memoease.databinding.FragmentSplashBinding
+import com.maurya.memoease.utils.HelperSharedPreference
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
