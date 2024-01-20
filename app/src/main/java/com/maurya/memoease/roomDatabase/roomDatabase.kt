@@ -43,37 +43,4 @@ import javax.inject.Inject
 //        }
 //    }
 //}
-@AndroidEntryPoint
-class SplashFragment : Fragment() {
 
-    private lateinit var fragmentSplashBinding: FragmentSplashBinding
-    private lateinit var navController: NavController
-
-    @Inject
-    lateinit var sharedPreferenceHelper: HelperSharedPreference
-
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        fragmentSplashBinding = FragmentSplashBinding.inflate(inflater, container, false)
-        return fragmentSplashBinding.root
-    }
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-
-        navController = Navigation.findNavController(view)
-
-
-        Handler(Looper.myLooper()!!).postDelayed(
-            {
-                if (sharedPreferenceHelper.getToken() != null) {
-                    navController.navigate(R.id.action_splashFragment_to_homeFragment)
-                } else {
-                    navController.navigate(R.id.action_splashFragment_to_signInFragment)
-                }
-            }, 2500
-        )
-    }
-}
