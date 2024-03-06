@@ -5,11 +5,9 @@ import android.util.Patterns
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.NavController
@@ -19,6 +17,7 @@ import com.maurya.memoease.utils.HelperSharedPreference
 import com.maurya.memoease.databinding.FragmentSignInBinding
 import com.maurya.memoease.models.UserRequest
 import com.maurya.memoease.utils.NetworkResult
+import com.maurya.memoease.utils.showToast
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -29,7 +28,6 @@ class SignInFragment : Fragment() {
     private lateinit var fragmentSignInBinding: FragmentSignInBinding
     private val fragmentSignInBindingNull get() = fragmentSignInBinding!!
     private lateinit var navController: NavController
-    private var isLoading: Boolean = false
     private val authViewModel by activityViewModels<AuthenticationViewmodel>()
 
     @Inject
@@ -39,10 +37,8 @@ class SignInFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         fragmentSignInBinding = FragmentSignInBinding.inflate(inflater, container, false)
-        val view = fragmentSignInBindingNull.root
 
-
-        return view;
+        return fragmentSignInBindingNull.root;
     }
 
 
@@ -51,12 +47,18 @@ class SignInFragment : Fragment() {
 
         navController = Navigation.findNavController(view)
 
-
         listeners()
+
+
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 authViewModel.userResponseStateFlow.collect {
                     loading(false)
+                    if (it is NetworkResult.Loading) {
+                        loading(true)
+                    } else {
+                        loading(false)
+                    }
                     when (it) {
                         is NetworkResult.Success -> {
                             sharedPreferenceHelper.saveToken(it.data!!.token)
@@ -64,7 +66,7 @@ class SignInFragment : Fragment() {
                         }
 
                         is NetworkResult.Error -> {
-                            showToast(it.message.toString())
+                            showToast(requireContext(), it.message.toString())
                             loading(false)
                         }
 
@@ -93,59 +95,51 @@ class SignInFragment : Fragment() {
         }
 
         fragmentSignInBinding.loginGoogleButtonSignInFragment.setOnClickListener {
-            Toast.makeText(context, "Feature coming soon", Toast.LENGTH_SHORT).show()
+            showToast(requireContext(), "Feature coming soon")
         }
 
         fragmentSignInBinding.forgetPasswordSignInFragment.setOnClickListener {
-            Toast.makeText(context, "Feature coming soon", Toast.LENGTH_SHORT).show()
+            showToast(requireContext(), "Feature coming soon")
         }
 
     }
 
     private fun signIn() {
-
-        loading(true)
-
         val email = fragmentSignInBinding.emailSignInFragment.text.toString().trim()
         val password = fragmentSignInBinding.passwordSignInFragment.text.toString().trim()
         val userName = ""
 
-
         authViewModel.loginUser(UserRequest(email, password, userName))
-
-
     }
 
     private fun isValidSignUpDetails(): Boolean {
         return if (fragmentSignInBinding.emailSignInFragment.text.toString().trim().isEmpty()) {
-            showToast("Enter Your email ")
+            showToast(requireContext(), "Enter Your email ")
             false
         } else if (!Patterns.EMAIL_ADDRESS.matcher(
                 fragmentSignInBinding.emailSignInFragment.text.toString()
             ).matches()
         ) {
-            showToast("Enter Valid Email ")
+            showToast(requireContext(), "Enter Valid Email ")
             false
         } else if (fragmentSignInBinding.passwordSignInFragment.text.toString().trim().isEmpty()) {
-            showToast("Enter Password ")
+            showToast(requireContext(), "Enter Password ")
             false
         } else {
             true
         }
     }
 
+
     private fun loading(isLoading: Boolean) {
-        if (isLoading) {
-            fragmentSignInBinding.loginButtonSignInFragment.visibility = View.INVISIBLE
+        if (!isLoading) {
             fragmentSignInBinding.progressBaSignInFragment.visibility = View.VISIBLE
+            fragmentSignInBinding.loginButtonSignInFragment.visibility = View.INVISIBLE
         } else {
-            fragmentSignInBinding.progressBaSignInFragment.visibility = View.INVISIBLE
+            fragmentSignInBinding.progressBaSignInFragment.visibility = View.GONE
             fragmentSignInBinding.loginButtonSignInFragment.visibility = View.VISIBLE
         }
     }
 
-    private fun showToast(message: String) {
-        Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
-    }
 
 }

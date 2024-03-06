@@ -1,6 +1,6 @@
 <resources>
     <string name="app_name">MemoEase</string>
-    <!-- TODO: Remove or change this placeholder text -->
+
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="dontHaveAccountSignInFragment">Don\'t have an account? <font color="#2196F3"> Register now</font></string>
     <string name="HaveAccountSignUpFragment">Have an account? <font color="#2196F3"> Log in </font></string>

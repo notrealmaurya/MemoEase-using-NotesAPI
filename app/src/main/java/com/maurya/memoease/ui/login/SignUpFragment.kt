@@ -19,6 +19,7 @@ import com.maurya.memoease.utils.HelperSharedPreference
 import com.maurya.memoease.databinding.FragmentSignUpBinding
 import com.maurya.memoease.models.UserRequest
 import com.maurya.memoease.utils.NetworkResult
+import com.maurya.memoease.utils.showToast
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -29,7 +30,6 @@ class SignUpFragment : Fragment() {
     private lateinit var fragmentSignUpBinding: FragmentSignUpBinding
     private val fragmentSignUpBindingNull get() = fragmentSignUpBinding!!
     private lateinit var navController: NavController
-    private var isLoading: Boolean = false
     private val authViewModel by activityViewModels<AuthenticationViewmodel>()
 
     @Inject
@@ -42,6 +42,7 @@ class SignUpFragment : Fragment() {
         fragmentSignUpBinding = FragmentSignUpBinding.inflate(inflater, container, false)
         val view = fragmentSignUpBinding.root
 
+        loading(false)
 
         return view;
     }
@@ -65,7 +66,7 @@ class SignUpFragment : Fragment() {
                         }
 
                         is NetworkResult.Error -> {
-                            showToast(it.message.toString())
+                            showToast(requireContext(),it.message.toString())
                             loading(false)
                         }
 
@@ -73,7 +74,8 @@ class SignUpFragment : Fragment() {
                             loading(true)
                         }
 
-                        else -> {}
+                        else -> {
+                            loading(false)}
                     }
 
                 }
@@ -112,10 +114,11 @@ class SignUpFragment : Fragment() {
 
         authViewModel.registerUser(UserRequest(email, password, userName))
 
+        loading(false)
     }
 
     private fun loading(isLoading: Boolean) {
-        if (isLoading) {
+        if (!isLoading) {
             fragmentSignUpBinding.signupButtonSignUpFragment.visibility = View.INVISIBLE
             fragmentSignUpBinding.progressBaSignUpFragment.visibility = View.VISIBLE
         } else {
@@ -129,42 +132,40 @@ class SignUpFragment : Fragment() {
         return if (fragmentSignUpBinding.userNameSignUpFragment.text.toString().trim()
                 .isEmpty()
         ) {
-            showToast("Enter Your userName ")
+            showToast(requireContext(),"Enter Your userName ")
             false
         } else if (fragmentSignUpBinding.emailSignUpFragment.text.toString().trim()
                 .isEmpty()
         ) {
-            showToast("Enter Your email ")
+            showToast(requireContext(),"Enter Your email ")
             false
         } else if (!Patterns.EMAIL_ADDRESS.matcher(
                 fragmentSignUpBinding.emailSignUpFragment.text.toString()
             ).matches()
         ) {
-            showToast("Enter Valid Email ")
+            showToast(requireContext(),"Enter Valid Email ")
             false
         } else if (fragmentSignUpBinding.passwordSignUpFragment.text.toString().trim()
                 .isEmpty() && fragmentSignUpBinding.passwordSignUpFragment.text.length >= 5
         ) {
-            showToast("Password length should be greater than 5 ")
+            showToast(requireContext(),"Password length should be greater than 5 ")
             false
         } else if (fragmentSignUpBinding.passwordConfirmSignUpFragment.text.toString()
                 .trim()
                 .isEmpty()
         ) {
-            showToast("Confirm your Password")
+            showToast(requireContext(),"Confirm your Password")
             false
         } else if (fragmentSignUpBinding.passwordSignUpFragment.text.toString() != fragmentSignUpBinding.passwordConfirmSignUpFragment.text.toString()
         ) {
-            showToast("Your Password doesn't Match ")
+            showToast(requireContext(),"Your Password doesn't Match ")
             false
         } else {
             true
         }
     }
 
-    private fun showToast(message: String) {
-        Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
-    }
+
 
     override fun onDestroyView() {
         super.onDestroyView()
