@@ -16,31 +16,34 @@ import javax.inject.Inject
 
 class UserRepository @Inject constructor(private val userAPI: UserAPI) {
 
-    private val _userResponseStateFlow = MutableStateFlow<NetworkResult<UserResponse>>(NetworkResult.Loading())
-
-    val userResponseStateFLow: StateFlow<NetworkResult<UserResponse>> get() = _userResponseStateFlow
+    private val _userResponseLiveData = MutableLiveData<NetworkResult<UserResponse>>()
+    val userResponseLiveData: LiveData<NetworkResult<UserResponse>>
+        get() = _userResponseLiveData
 
     suspend fun registerUser(userRequest: UserRequest) {
-        _userResponseStateFlow.emit(NetworkResult.Loading())
+        _userResponseLiveData.postValue(NetworkResult.Loading())
         val response = userAPI.signUp(userRequest)
         handleResponse(response)
     }
 
     suspend fun loginUser(userRequest: UserRequest) {
-        _userResponseStateFlow.emit(NetworkResult.Loading())
-        val response = userAPI.signIn(userRequest)
-        handleResponse(response)
-
+        _userResponseLiveData.postValue(NetworkResult.Loading())
+        try {
+            val response = userAPI.signIn(userRequest)
+            handleResponse(response)
+        } catch (e: Exception) {
+            _userResponseLiveData.postValue(NetworkResult.Error("Failed to connect to the server"))
+        }
     }
 
-    private suspend fun handleResponse(response: Response<UserResponse>) {
+    private fun handleResponse(response: Response<UserResponse>) {
         if (response.isSuccessful && response.body() != null) {
-            _userResponseStateFlow.emit(NetworkResult.Success(response.body()!!))
+            _userResponseLiveData.postValue(NetworkResult.Success(response.body()!!))
         } else if (response.errorBody() != null) {
             val errorObject = JSONObject(response.errorBody()!!.charStream().readText())
-            _userResponseStateFlow.emit(NetworkResult.Error(errorObject.getString("message")))
+            _userResponseLiveData.postValue(NetworkResult.Error(errorObject.getString("message")))
         } else {
-            _userResponseStateFlow.emit(NetworkResult.Error("Something went wrong"))
+            _userResponseLiveData.postValue(NetworkResult.Error("Something went wrong"))
         }
     }
 

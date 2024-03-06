@@ -55,34 +55,28 @@ class SignUpFragment : Fragment() {
 
         listeners()
 
-        viewLifecycleOwner.lifecycleScope.launch {
-            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                authViewModel.userResponseStateFlow.collect {
+        authViewModel.userResponseLiveData.observe(viewLifecycleOwner, Observer {
+            loading(false)
+            when (it) {
+                is NetworkResult.Success -> {
+                    sharedPreferenceHelper.saveToken(it.data!!.token)
+                    navController.navigate(R.id.action_signUpFragment_to_homeFragment)
+                }
+
+                is NetworkResult.Error -> {
+                    showToast(requireContext(), it.message.toString())
                     loading(false)
-                    when (it) {
-                        is NetworkResult.Success -> {
-                            sharedPreferenceHelper.saveToken(it.data!!.token)
-                            navController.navigate(R.id.action_signUpFragment_to_homeFragment)
-                        }
+                }
 
-                        is NetworkResult.Error -> {
-                            showToast(requireContext(),it.message.toString())
-                            loading(false)
-                        }
-
-                        is NetworkResult.Loading -> {
-                            loading(true)
-                        }
-
-                        else -> {
-                            loading(false)}
-                    }
-
+                is NetworkResult.Loading -> {
+                    loading(true)
                 }
             }
-        }
 
+
+        })
     }
+
 
     private fun listeners() {
 
@@ -107,18 +101,15 @@ class SignUpFragment : Fragment() {
 
     private fun signUp() {
         loading(true)
-
         val userName = fragmentSignUpBinding.userNameSignUpFragment.text.toString().trim()
         val email = fragmentSignUpBinding.emailSignUpFragment.text.toString().trim()
         val password = fragmentSignUpBinding.passwordSignUpFragment.text.toString().trim()
 
         authViewModel.registerUser(UserRequest(email, password, userName))
-
-        loading(false)
     }
 
     private fun loading(isLoading: Boolean) {
-        if (!isLoading) {
+        if (isLoading) {
             fragmentSignUpBinding.signupButtonSignUpFragment.visibility = View.INVISIBLE
             fragmentSignUpBinding.progressBaSignUpFragment.visibility = View.VISIBLE
         } else {
@@ -132,39 +123,38 @@ class SignUpFragment : Fragment() {
         return if (fragmentSignUpBinding.userNameSignUpFragment.text.toString().trim()
                 .isEmpty()
         ) {
-            showToast(requireContext(),"Enter Your userName ")
+            showToast(requireContext(), "Enter Your userName ")
             false
         } else if (fragmentSignUpBinding.emailSignUpFragment.text.toString().trim()
                 .isEmpty()
         ) {
-            showToast(requireContext(),"Enter Your email ")
+            showToast(requireContext(), "Enter Your email ")
             false
         } else if (!Patterns.EMAIL_ADDRESS.matcher(
                 fragmentSignUpBinding.emailSignUpFragment.text.toString()
             ).matches()
         ) {
-            showToast(requireContext(),"Enter Valid Email ")
+            showToast(requireContext(), "Enter Valid Email ")
             false
         } else if (fragmentSignUpBinding.passwordSignUpFragment.text.toString().trim()
                 .isEmpty() && fragmentSignUpBinding.passwordSignUpFragment.text.length >= 5
         ) {
-            showToast(requireContext(),"Password length should be greater than 5 ")
+            showToast(requireContext(), "Password length should be greater than 5 ")
             false
         } else if (fragmentSignUpBinding.passwordConfirmSignUpFragment.text.toString()
                 .trim()
                 .isEmpty()
         ) {
-            showToast(requireContext(),"Confirm your Password")
+            showToast(requireContext(), "Confirm your Password")
             false
         } else if (fragmentSignUpBinding.passwordSignUpFragment.text.toString() != fragmentSignUpBinding.passwordConfirmSignUpFragment.text.toString()
         ) {
-            showToast(requireContext(),"Your Password doesn't Match ")
+            showToast(requireContext(), "Your Password doesn't Match ")
             false
         } else {
             true
         }
     }
-
 
 
     override fun onDestroyView() {

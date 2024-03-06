@@ -17,7 +17,10 @@ import javax.inject.Inject
 class AuthenticationViewmodel @Inject constructor(private val userRepository: UserRepository) :
     ViewModel() {
 
-    val userResponseStateFlow: StateFlow<NetworkResult<UserResponse>> get() = userRepository.userResponseStateFLow
+    val userResponseLiveData: LiveData<NetworkResult<UserResponse>>
+        get() = userRepository.userResponseLiveData
+
+
     fun registerUser(userRequest: UserRequest) {
         viewModelScope.launch {
             userRepository.registerUser(userRequest)

@@ -5,11 +5,10 @@ import android.util.Patterns
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.lifecycleScope
-import androidx.lifecycle.repeatOnLifecycle
+import androidx.lifecycle.Observer
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
 import com.maurya.memoease.R
@@ -20,7 +19,6 @@ import com.maurya.memoease.utils.NetworkResult
 import com.maurya.memoease.utils.hideKeyboard
 import com.maurya.memoease.utils.showToast
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -30,6 +28,7 @@ class SignInFragment : Fragment() {
     private val fragmentSignInBindingNull get() = fragmentSignInBinding!!
     private lateinit var navController: NavController
     private val authViewModel by activityViewModels<AuthenticationViewmodel>()
+
 
     @Inject
     lateinit var sharedPreferenceHelper: HelperSharedPreference
@@ -50,34 +49,36 @@ class SignInFragment : Fragment() {
 
         listeners()
 
-
-        viewLifecycleOwner.lifecycleScope.launch {
-            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                authViewModel.userResponseStateFlow.collect {
-                    loading(false)
-                    when (it) {
-                        is NetworkResult.Success -> {
-                            sharedPreferenceHelper.saveToken(it.data!!.token)
-                            navController.navigate(R.id.action_signInFragment_to_homeFragment)
-                        }
-
-                        is NetworkResult.Error -> {
-                            showToast(requireContext(), it.message.toString())
-                            loading(false)
-                        }
-
-                        is NetworkResult.Loading -> {
-                            loading(true)
-                        }
-
-                        else -> {
-                        }
-                    }
+        authViewModel.userResponseLiveData.observe(viewLifecycleOwner, Observer {
+            isLoading(false)
+            when (it) {
+                is NetworkResult.Success -> {
+                    sharedPreferenceHelper.saveToken(it.data!!.token)
+                    navController.navigate(R.id.action_signInFragment_to_homeFragment)
                 }
 
+                is NetworkResult.Error -> {
+                    showToast(requireContext(), it.message.toString())
+                    isLoading(false)
+                }
+                is NetworkResult.Loading -> {
+                    isLoading(true)
+                }
             }
-        }
+        })
 
+
+    }
+
+    private fun isLoading(isLoading: Boolean) {
+        if (isLoading) {
+            fragmentSignInBinding.loginButtonSignInFragment.visibility = View.INVISIBLE
+            fragmentSignInBinding.progressBaSignInFragment.visibility = View.VISIBLE
+        } else {
+            fragmentSignInBinding.loginButtonSignInFragment.visibility = View.VISIBLE
+            fragmentSignInBinding.progressBaSignInFragment.visibility = View.INVISIBLE
+
+        }
     }
 
     private fun listeners() {
@@ -102,6 +103,11 @@ class SignInFragment : Fragment() {
     }
 
     private fun signIn() {
+        isLoading(true)
+
+        fragmentSignInBinding.progressBaSignInFragment.isVisible = true
+        fragmentSignInBinding.loginButtonSignInFragment.isVisible = false
+
         view?.let { hideKeyboard(it) }
 
         val email = fragmentSignInBinding.emailSignInFragment.text.toString().trim()
@@ -109,18 +115,11 @@ class SignInFragment : Fragment() {
         val userName = ""
 
         authViewModel.loginUser(UserRequest(email, password, userName))
-    }
 
-    private fun loading(isLoading: Boolean) {
-        if (!isLoading) {
-            fragmentSignInBinding.progressBaSignInFragment.visibility = View.VISIBLE
-            fragmentSignInBinding.loginButtonSignInFragment.visibility = View.INVISIBLE
-        } else {
-            fragmentSignInBinding.progressBaSignInFragment.visibility = View.INVISIBLE
-            fragmentSignInBinding.loginButtonSignInFragment.visibility = View.VISIBLE
-        }
-    }
 
+        fragmentSignInBinding.progressBaSignInFragment.isVisible = false
+        fragmentSignInBinding.loginButtonSignInFragment.isVisible = true
+    }
 
     private fun isValidSignUpDetails(): Boolean {
         return if (fragmentSignInBinding.emailSignInFragment.text.toString().trim().isEmpty()) {
@@ -139,9 +138,6 @@ class SignInFragment : Fragment() {
             true
         }
     }
-
-
-
 
 
 }
